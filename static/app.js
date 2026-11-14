@@ -120,38 +120,6 @@ const I18N = {
     leg_ndvi: 'Crop Greenness Rate'
   }
 };
-    opt_irr_no: 'Rainfed Dryland',
-    lbl_market: 'Crop Season',
-    opt_mkt_any: 'All Seasons',
-    opt_mkt_kislik: 'Winter Hardened',
-    opt_mkt_yazlik: 'Summer Grain',
-    opt_mkt_bahar: 'Spring Legume',
-    btn_run_analysis: 'Query NASA POWER & Generate Model',
-    btn_running: 'Ingesting NASA Agroclimatology...',
-    welcome_title: 'Crop rotation decision model grounded in NASA POWER satellite metrics.',
-    welcome_desc: 'Set the target coordinates and target season to begin. The model correlates cumulative radiation, moisture anomalies, and thermal stress against biological thresholds.',
-    pil_1_title: 'Soil Restoration',
-    pil_1_desc: 'Nitrogen-fixing pulses and deep root tap systems that reduce synthetic fertilizer reliance.',
-    pil_2_title: 'Water Accounting',
-    pil_2_desc: 'Cultivars matched to effective rainfall curves to preserve aquifer reserves.',
-    pil_3_title: 'Hazard Mitigation',
-    pil_3_desc: 'Timing adjustments that shield anthesis from thermal scorch and unseasonal frost.',
-    m_temp: 'Mean Temperature',
-    m_precip: 'Daily Precipitation',
-    m_solar: 'Solar Insolation',
-    m_wind: 'Wind Velocity',
-    best_match_badge: 'Primary Recommendation',
-    score_label: 'Fitness Index (0-100)',
-    strategies_heading: 'Three Cultivation Routes',
-    strategies_sub: 'Choose the agronomic axis that best aligns with your management goals.',
-    tab_stress: '12-Month Agro-Stress & Phenology Proxy',
-    tab_timeline: 'Daily NASA POWER Time-Series',
-    btn_report: 'Export Agronomic Brief (.txt)',
-    leg_temp: 'Thermal Stress',
-    leg_water: 'Moisture Deficit',
-    leg_ndvi: 'NDVI Phenology Curve'
-  }
-};
 
 let currentLang = 'tr';
 let appState = {
