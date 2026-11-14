@@ -1,106 +1,113 @@
 // ============================================================================
-// Field Shift — High Performance, Clean & Robust Frontend Logic
+// Field Shift — Purposeful, Grounded Agroclimatology Interface Logic
 // ============================================================================
 
-// --- Translations & Localization ---
 const I18N = {
   tr: {
-    lang_code: 'EN',
+    lang_code: 'English',
     loc_title: 'Tarla Konumu',
-    map_hint: 'Haritaya tıklayarak nokta seçebilirsiniz',
-    lbl_lat: 'Enlem (°N)',
-    lbl_lon: 'Boylam (°E)',
-    date_title: 'Tarih Aralığı',
-    lbl_start: 'Başlangıç (Ekim)',
-    lbl_end: 'Bitiş (Hasat)',
-    pref_title: 'Çiftçi Öncelikleri & Rotasyon',
-    lbl_current_crop: 'Şu Anda Ekili Olan Ürün:',
-    opt_empty_crop: 'Seçilmedi (Boş tarla / Yeni ekim)',
-    p_water: '💧 Su Tasarrufu',
-    p_soil: '🌿 Toprak Sağlığı',
-    p_yield: '📈 Kararlı Verim',
-    p_resilience: '🛡️ Zorlu Koşul Direnci',
-    advanced_title: '⚙️ Gelişmiş Senaryo & Kısıtlar',
-    lbl_precip_change: 'Yağış Değişimi Simülasyonu (%)',
-    lbl_temp_change: 'Sıcaklık Değişimi Simülasyonu (°C)',
-    lbl_irrigation: 'Sulama Durumu',
-    opt_irr_any: 'Farketmez / Belirtilmemiş',
-    opt_irr_yes: 'Sulama Var',
-    opt_irr_no: 'Sulama Yok (Kuru)',
-    lbl_market: 'Pazar Hedefi',
-    opt_mkt_any: 'Tümü',
-    opt_mkt_kislik: 'Kışlık Ürünler',
-    opt_mkt_yazlik: 'Yazlık Ürünler',
-    opt_mkt_bahar: 'Bahar Ürünleri',
-    btn_run_analysis: 'NASA Verisini Çek & Analiz Et',
-    btn_running: 'NASA Verileri Alınıyor...',
-    welcome_title: 'NASA POWER Verileriyle Ekin Önerisi Alın',
-    welcome_desc: 'Sol panelden tarlanızı haritada seçip tarih aralığını belirleyin, ardından "NASA Verisini Çek & Analiz Et" butonuna basın.',
-    m_temp: 'Ort. Sıcaklık',
+    btn_locate: 'Cihaz Konumu',
+    lbl_lat: 'Enlem',
+    lbl_lon: 'Boylam',
+    date_title: 'Ekim ve Gözlem Dönemi',
+    lbl_start: 'Başlangıç',
+    lbl_end: 'Hasat / Bitiş',
+    pref_title: 'Çiftlik Koşulları ve Hedefler',
+    lbl_current_crop: 'Arazideki Mevcut Ürün',
+    opt_empty_crop: 'Seçilmedi (Boş tarla / Nadas)',
+    p_water: 'Su Tasarrufu',
+    p_soil: 'Toprak Sağlığı ve Azot',
+    p_yield: 'Kararlı Verim Güvencesi',
+    p_resilience: 'Aşırı Hava Olaylarına Direnç',
+    advanced_title: 'Sulama ve İklim Simülasyonu',
+    lbl_precip_change: 'Yağış Sapması',
+    lbl_temp_change: 'Sıcaklık Sapması',
+    lbl_irrigation: 'Sulama İmkanı',
+    opt_irr_any: 'Belirtilmemiş',
+    opt_irr_yes: 'Sulu Tarım',
+    opt_irr_no: 'Kuru Tarım',
+    lbl_market: 'Ürün Grubu',
+    opt_mkt_any: 'Tüm Sezonlar',
+    opt_mkt_kislik: 'Kışlık',
+    opt_mkt_yazlik: 'Yazlık',
+    opt_mkt_bahar: 'Bahar',
+    btn_run_analysis: 'NASA İklim Verisini Getir ve Analiz Et',
+    btn_running: 'NASA Uydu Verileri Çözümleniyor...',
+    welcome_title: 'NASA POWER agroclimatology verileriyle optimize edilmiş rotasyon modeli.',
+    welcome_desc: 'Sol panelden arazi koordinatlarını ve inceleme mevsimini belirleyip analizi başlatın. Model; geçmiş sıcaklık, kuraklık indisi, solar radyasyon ve buharlaşma dengesini bitki biyolojisi limitleriyle eşleştirir.',
+    pil_1_title: 'Toprak Yenileme',
+    pil_1_desc: 'Baklagil ve derin köklü bitkilerle kimyasal gübre gereksinimini azaltan azot dengesi.',
+    pil_2_title: 'Su Bütçesi',
+    pil_2_desc: 'Bölgenin efektif yağış dağılımına göre yeraltı su çekimini minimize eden öneriler.',
+    pil_3_title: 'Risk Savunması',
+    pil_3_desc: 'Don, polenleşme döneminde aşırı ısı dalgası ve nem stresine karşı dayanıklı rotalar.',
+    m_temp: 'Ortalama Sıcaklık',
     m_precip: 'Günlük Yağış',
-    m_solar: 'Güneş Enerjisi',
+    m_solar: 'Solar Radyasyon',
     m_wind: 'Rüzgar Hızı',
-    best_match_badge: '⭐ En Yüksek Uyumlu Ekin',
-    score_label: '/ 100',
-    strategies_heading: '🎯 3 Farklı Rotasyon Stratejisi',
-    strategies_sub: 'Hedefinize göre en uygun planı seçin',
-    tab_stress: '📅 12 Aylık Stres & Büyüme Takvimi',
-    tab_timeline: '📈 Günlük NASA Ölçümleri',
-    btn_report: 'Rapor İndir (.txt)',
+    best_match_badge: 'Birincil Ekin Tavsiyesi',
+    score_label: 'Uyum İndeksi (0-100)',
+    strategies_heading: 'Üç Rotasyon Rotası',
+    strategies_sub: 'Çiftlik yönetim stratejinize uygun olan ekseni tercih edebilirsiniz.',
+    tab_stress: '12 Aylık İklim Stresi & Büyüme Modeli',
+    tab_timeline: 'Günlük NASA POWER Ölçümleri',
+    btn_report: 'Saha Raporu İndir (.txt)',
     leg_temp: 'Sıcaklık Stresi',
-    leg_water: 'Su Stresi',
-    leg_ndvi: 'NDVI (Bitki Gelişim Tahmini)',
-    disclaimer_title: 'Karar Destek Notu:',
-    disclaimer_text: 'Bu sistem karar destek amaçlı bir simülasyondur. Saha ekimi öncesi il/ilçe tarım müdürlükleri ve ziraat mühendisleri görüşü esastır.'
+    leg_water: 'Su Eksikliği / Kuraklık',
+    leg_ndvi: 'NDVI Büyüme Eğrisi'
   },
   en: {
-    lang_code: 'TR',
-    loc_title: 'Field Location',
-    map_hint: 'Click on the map to set location',
-    lbl_lat: 'Latitude (°N)',
-    lbl_lon: 'Longitude (°E)',
-    date_title: 'Date Range',
-    lbl_start: 'Start Date (Planting)',
-    lbl_end: 'End Date (Harvest)',
-    pref_title: 'Farmer Priorities & Rotation',
-    lbl_current_crop: 'Currently Planted Crop:',
-    opt_empty_crop: 'None (Fallow / New planting)',
-    p_water: '💧 Water Conservation',
-    p_soil: '🌿 Soil Health',
-    p_yield: '📈 Stable Yield',
-    p_resilience: '🛡️ Hardiness & Resilience',
-    advanced_title: '⚙️ Advanced Scenarios & Constraints',
-    lbl_precip_change: 'Precipitation Change Sim (%)',
-    lbl_temp_change: 'Temperature Change Sim (°C)',
-    lbl_irrigation: 'Irrigation Setup',
-    opt_irr_any: 'Any / Unspecified',
-    opt_irr_yes: 'Irrigated',
-    opt_irr_no: 'Rainfed (No Irrigation)',
-    lbl_market: 'Market Preference',
-    opt_mkt_any: 'All Markets',
-    opt_mkt_kislik: 'Winter Crops',
-    opt_mkt_yazlik: 'Summer Crops',
-    opt_mkt_bahar: 'Spring Crops',
-    btn_run_analysis: 'Fetch NASA Data & Analyze',
-    btn_running: 'Fetching NASA Climate Data...',
-    welcome_title: 'Get Crop Recommendations via NASA POWER Data',
-    welcome_desc: 'Select your field on the map, set dates, and click "Fetch NASA Data & Analyze".',
-    m_temp: 'Avg. Temp',
-    m_precip: 'Daily Rain',
-    m_solar: 'Solar Energy',
-    m_wind: 'Wind Speed',
-    best_match_badge: '⭐ Top Recommended Crop',
-    score_label: '/ 100',
-    strategies_heading: '🎯 3 Rotation Strategies',
-    strategies_sub: 'Choose the best path for your agricultural target',
-    tab_stress: '📅 12-Month Stress & Growth Calendar',
-    tab_timeline: '📈 Daily NASA Measurements',
-    btn_report: 'Download Report (.txt)',
-    leg_temp: 'Temp Stress',
-    leg_water: 'Water Stress',
-    leg_ndvi: 'NDVI (Vegetation Proxy)',
-    disclaimer_title: 'Decision Support Note:',
-    disclaimer_text: 'This system provides simulation for decision support. Consult local agricultural authorities and agronomists before planting.'
+    lang_code: 'Türkçe',
+    loc_title: 'Field Coordinates',
+    btn_locate: 'Device Location',
+    lbl_lat: 'Latitude',
+    lbl_lon: 'Longitude',
+    date_title: 'Planting & Observation Window',
+    lbl_start: 'Planting Date',
+    lbl_end: 'Harvest Date',
+    pref_title: 'Farm Objectives & Field State',
+    lbl_current_crop: 'Current Standing Crop',
+    opt_empty_crop: 'None Selected (Fallow)',
+    p_water: 'Water Conservation',
+    p_soil: 'Soil Regeneration & Nitrogen',
+    p_yield: 'Yield Stability',
+    p_resilience: 'Extreme Weather Resilience',
+    advanced_title: 'Irrigation & Climatological Shift',
+    lbl_precip_change: 'Precipitation Delta',
+    lbl_temp_change: 'Temperature Delta',
+    lbl_irrigation: 'Water Delivery',
+    opt_irr_any: 'Unspecified',
+    opt_irr_yes: 'Irrigated System',
+    opt_irr_no: 'Rainfed Dryland',
+    lbl_market: 'Crop Season',
+    opt_mkt_any: 'All Seasons',
+    opt_mkt_kislik: 'Winter Hardened',
+    opt_mkt_yazlik: 'Summer Grain',
+    opt_mkt_bahar: 'Spring Legume',
+    btn_run_analysis: 'Query NASA POWER & Generate Model',
+    btn_running: 'Ingesting NASA Agroclimatology...',
+    welcome_title: 'Crop rotation decision model grounded in NASA POWER satellite metrics.',
+    welcome_desc: 'Set the target coordinates and target season to begin. The model correlates cumulative radiation, moisture anomalies, and thermal stress against biological thresholds.',
+    pil_1_title: 'Soil Restoration',
+    pil_1_desc: 'Nitrogen-fixing pulses and deep root tap systems that reduce synthetic fertilizer reliance.',
+    pil_2_title: 'Water Accounting',
+    pil_2_desc: 'Cultivars matched to effective rainfall curves to preserve aquifer reserves.',
+    pil_3_title: 'Hazard Mitigation',
+    pil_3_desc: 'Timing adjustments that shield anthesis from thermal scorch and unseasonal frost.',
+    m_temp: 'Mean Temperature',
+    m_precip: 'Daily Precipitation',
+    m_solar: 'Solar Insolation',
+    m_wind: 'Wind Velocity',
+    best_match_badge: 'Primary Recommendation',
+    score_label: 'Fitness Index (0-100)',
+    strategies_heading: 'Three Cultivation Routes',
+    strategies_sub: 'Choose the agronomic axis that best aligns with your management goals.',
+    tab_stress: '12-Month Agro-Stress & Phenology Proxy',
+    tab_timeline: 'Daily NASA POWER Time-Series',
+    btn_report: 'Export Agronomic Brief (.txt)',
+    leg_temp: 'Thermal Stress',
+    leg_water: 'Moisture Deficit',
+    leg_ndvi: 'NDVI Phenology Curve'
   }
 };
 
@@ -108,11 +115,10 @@ let currentLang = 'tr';
 let appState = {
   ort: null,
   raw: null,
-  rotationResult: null,
-  isAnalyzing: false
+  rotationResult: null
 };
 
-// --- DOM References ---
+// DOM references
 const latInput = document.getElementById('latInput');
 const lonInput = document.getElementById('lonInput');
 const startDateInput = document.getElementById('startDate');
@@ -146,28 +152,23 @@ const statusBannerText = document.getElementById('statusBannerText');
 const welcomePlaceholder = document.getElementById('welcomePlaceholder');
 const analysisContent = document.getElementById('analysisContent');
 
-// Metrics
 const valTemp = document.getElementById('valTemp');
 const valPrecip = document.getElementById('valPrecip');
 const valSolar = document.getElementById('valSolar');
 const valWind = document.getElementById('valWind');
 
-// Featured Card
 const bestCropName = document.getElementById('bestCropName');
 const bestCropScore = document.getElementById('bestCropScore');
 const bestCropSub = document.getElementById('bestCropSub');
 
-// Strategies Container
 const strategiesContainer = document.getElementById('strategiesContainer');
 const riskWarningsRow = document.getElementById('riskWarningsRow');
 
-// Charts
 let stressChartInstance = null;
 let timelineChartInstance = null;
 let leafletMap = null;
 let mapMarker = null;
 
-// --- Helper Functions ---
 function showBanner(msg, isSuccess = false) {
   statusBannerText.textContent = msg;
   statusBanner.className = 'status-banner' + (isSuccess ? ' success' : '');
@@ -178,14 +179,12 @@ function showBanner(msg, isSuccess = false) {
 }
 
 function formatDateForAPI(dateStr) {
-  // YYYY-MM-DD -> YYYYMMDD
   return dateStr.replace(/-/g, '');
 }
 
-// --- Map Initialization ---
 function initLeaflet() {
-  const initLat = parseFloat(latInput.value) || 41.0082;
-  const initLon = parseFloat(lonInput.value) || 28.9784;
+  const initLat = parseFloat(latInput.value) || 37.8746;
+  const initLon = parseFloat(lonInput.value) || 32.4932;
 
   leafletMap = L.map('map', {
     zoomControl: false,
@@ -201,12 +200,10 @@ function initLeaflet() {
 
   mapMarker = L.marker([initLat, initLon], { draggable: true }).addTo(leafletMap);
 
-  // Map click
   leafletMap.on('click', (e) => {
     updateCoords(e.latlng.lat, e.latlng.lng);
   });
 
-  // Marker drag
   mapMarker.on('dragend', (e) => {
     const latlng = e.target.getLatLng();
     updateCoords(latlng.lat, latlng.lng);
@@ -223,14 +220,12 @@ function updateCoords(lat, lon) {
   }
 }
 
-// --- Crop Options Loader ---
 async function loadCrops() {
   try {
     const res = await fetch('/api/bitkiler');
     if (!res.ok) throw new Error('Bitkiler yüklenemedi');
     const crops = await res.json();
     
-    // Clear existing except first
     mevcutCropSelect.innerHTML = `<option value="">${I18N[currentLang].opt_empty_crop}</option>`;
     for (const [key, crop] of Object.entries(crops)) {
       const opt = document.createElement('option');
@@ -243,7 +238,6 @@ async function loadCrops() {
   }
 }
 
-// --- Sliders Listeners ---
 function initSliders() {
   const sliders = [
     { input: pSu, val: valPSu },
@@ -255,9 +249,7 @@ function initSliders() {
   sliders.forEach(({ input, val }) => {
     input.addEventListener('input', () => {
       val.textContent = input.value;
-      if (appState.ort) {
-        debounceRotation();
-      }
+      if (appState.ort) debounceRotation();
     });
   });
 
@@ -290,13 +282,11 @@ function debounceRotation() {
   }, 250);
 }
 
-// --- Language Switcher ---
 function setLanguage(lang) {
   currentLang = lang;
   langText.textContent = I18N[lang].lang_code;
   document.documentElement.lang = lang;
 
-  // Update text nodes with data-i18n
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     if (I18N[lang][key]) {
@@ -309,7 +299,6 @@ function setLanguage(lang) {
   }
 }
 
-// --- Main Analysis & API Execution ---
 async function runFullAnalysis() {
   const lat = parseFloat(latInput.value);
   const lon = parseFloat(lonInput.value);
@@ -326,7 +315,6 @@ async function runFullAnalysis() {
     return;
   }
 
-  // Set Loading
   btnAnalyze.disabled = true;
   btnAnalyze.querySelector('.btn-spinner').style.display = 'inline-block';
   btnAnalyze.querySelector('.btn-label').textContent = I18N[currentLang].btn_running;
@@ -346,20 +334,15 @@ async function runFullAnalysis() {
     appState.ort = data.ortalama;
     appState.raw = data.raw;
 
-    // Render Metrics
     valTemp.textContent = appState.ort.sıcaklık_C;
     valPrecip.textContent = appState.ort.yağış_mm_gun;
     valSolar.textContent = appState.ort.güneş_MJ_m2_gun;
     valWind.textContent = appState.ort.rüzgar_m_s;
 
-    // Show live content, hide welcome
     welcomePlaceholder.style.display = 'none';
     analysisContent.style.display = 'block';
 
-    // Timeline Chart
     renderTimelineChart(appState.raw);
-
-    // Run rotation engine
     await runRotationCalculation();
 
     showBanner('NASA iklim verileri başarıyla işlendi!', true);
@@ -420,64 +403,60 @@ async function runRotationCalculation() {
   }
 }
 
-// --- Render Results UI ---
 function renderResultsUI(data) {
-  // 1. Risk Warnings
+  // Risk notices
   riskWarningsRow.innerHTML = '';
   if (data.risk_uyarilari && data.risk_uyarilari.length > 0) {
     riskWarningsRow.style.display = 'flex';
     data.risk_uyarilari.forEach((risk) => {
       const box = document.createElement('div');
-      box.className = 'risk-alert-box';
-      box.innerHTML = `<span>⚠️</span> <span>${risk.mesaj}</span>`;
+      box.className = 'risk-notice-entry';
+      box.textContent = risk.mesaj;
       riskWarningsRow.appendChild(box);
     });
   } else {
     riskWarningsRow.style.display = 'none';
   }
 
-  // 2. Featured Best Crop
+  // Hero Crop Sheet
   if (data.en_iyi_bitki) {
     bestCropName.textContent = data.en_iyi_bitki.bitki;
     bestCropScore.textContent = data.en_iyi_bitki.skor;
     const grup = data.en_iyi_bitki.grup ? ` • ${data.en_iyi_bitki.grup.toUpperCase()}` : '';
-    bestCropSub.textContent = (currentLang === 'tr' ? 'İklim şartları ve çiftçi önceliklerine göre en yüksek puanı alan ekin' : 'Highest scoring crop considering climate conditions and priorities') + grup;
+    bestCropSub.textContent = (currentLang === 'tr' ? 'Mevcut iklim rejimine ve toprak onarım hedeflerine en yüksek uyumu sağlayan ana çeşit' : 'Highest suitability match for local climatology and target rotation') + grup;
   }
 
-  // 3. Strategies Cards (3 items)
+  // 3 Columns Matrix
   strategiesContainer.innerHTML = '';
   if (data.stratejiler) {
-    const pillClasses = ['pill-soil', 'pill-water', 'pill-yield'];
     data.stratejiler.forEach((strat, idx) => {
       const card = document.createElement('div');
-      card.className = 'strategy-card';
-      const pillClass = pillClasses[idx % pillClasses.length];
+      card.className = 'strategy-column-card';
 
       card.innerHTML = `
-        <span class="strategy-badge-pill ${pillClass}">Strateji #${idx + 1}</span>
-        <h4 class="strategy-name">${strat.ad}</h4>
-        <div class="strategy-crop-highlight">
-          <span>${strat.bitki}</span>
-          <span class="strategy-crop-score">${strat.skor} / 100</span>
+        <span class="strat-card-tag">Rota ${idx + 1}</span>
+        <h4 class="strat-card-title">${strat.ad}</h4>
+        <div class="strat-crop-row">
+          <span class="strat-crop-name">${strat.bitki}</span>
+          <span class="strat-crop-score">${strat.skor} / 100</span>
         </div>
-        <p class="strategy-body-text">${strat.neden}</p>
-        <ul class="strategy-list">
+        <p class="strat-narrative">${strat.neden}</p>
+        <ul class="strat-points">
           <li><strong>${currentLang === 'tr' ? 'Kanıt:' : 'Evidence:'}</strong> ${strat.kanit || '--'}</li>
-          <li><strong>${currentLang === 'tr' ? 'Faydalar:' : 'Benefits:'}</strong> ${(strat.faydalar || []).join(', ')}</li>
-          <li><strong>${currentLang === 'tr' ? 'Riskler:' : 'Risks:'}</strong> ${(strat.riskler || []).join(', ')}</li>
+          <li><strong>${currentLang === 'tr' ? 'Kazanım:' : 'Gain:'}</strong> ${(strat.faydalar || []).join(', ')}</li>
+          <li><strong>${currentLang === 'tr' ? 'Önlem:' : 'Precaution:'}</strong> ${(strat.riskler || []).join(', ')}</li>
         </ul>
       `;
       strategiesContainer.appendChild(card);
     });
   }
 
-  // 4. Stress Calendar Chart
+  // Stress Chart
   if (data.stres_takvimi) {
     renderStressChart(data.stres_takvimi);
   }
 }
 
-// --- Chart Rendering ---
 function renderStressChart(stress) {
   const ctx = document.getElementById('stressChart').getContext('2d');
   if (stressChartInstance) stressChartInstance.destroy();
@@ -493,31 +472,31 @@ function renderStressChart(stress) {
       labels: labels,
       datasets: [
         {
-          label: currentLang === 'tr' ? 'Sıcaklık Stresi (%)' : 'Temp Stress (%)',
+          label: currentLang === 'tr' ? 'Sıcaklık Stresi (%)' : 'Thermal Stress (%)',
           data: tempStress,
-          borderColor: '#f97316',
-          backgroundColor: 'rgba(249, 115, 22, 0.08)',
+          borderColor: '#b47b2b',
+          backgroundColor: 'rgba(180, 123, 43, 0.08)',
           fill: true,
-          tension: 0.35,
-          pointRadius: 4
+          tension: 0.3,
+          pointRadius: 3
         },
         {
-          label: currentLang === 'tr' ? 'Su Stresi (%)' : 'Water Stress (%)',
+          label: currentLang === 'tr' ? 'Su Stresi (%)' : 'Moisture Deficit (%)',
           data: waterStress,
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.08)',
+          borderColor: '#236477',
+          backgroundColor: 'rgba(35, 100, 119, 0.08)',
           fill: true,
-          tension: 0.35,
-          pointRadius: 4
+          tension: 0.3,
+          pointRadius: 3
         },
         {
-          label: currentLang === 'tr' ? 'Bitki Gelişimi (NDVI Proxy)' : 'NDVI Vegetation Proxy',
+          label: currentLang === 'tr' ? 'NDVI Büyüme Eğrisi' : 'NDVI Phenology',
           data: ndvi,
-          borderColor: '#16a34a',
+          borderColor: '#255d36',
           backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.35,
-          pointRadius: 4
+          borderDash: [4, 4],
+          tension: 0.3,
+          pointRadius: 3
         }
       ]
     },
@@ -531,12 +510,12 @@ function renderStressChart(stress) {
         y: {
           beginAtZero: true,
           max: 100,
-          grid: { color: '#f1f5f9' },
-          ticks: { font: { family: 'Plus Jakarta Sans', size: 11 } }
+          grid: { color: '#e5ebe0' },
+          ticks: { font: { family: 'JetBrains Mono', size: 11 }, color: '#5e6b5f' }
         },
         x: {
           grid: { display: false },
-          ticks: { font: { family: 'Plus Jakarta Sans', size: 11 } }
+          ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: '#5e6b5f' }
         }
       }
     }
@@ -563,16 +542,16 @@ function renderTimelineChart(raw) {
         {
           label: currentLang === 'tr' ? 'Sıcaklık (°C)' : 'Temperature (°C)',
           data: t2mData,
-          borderColor: '#ea580c',
-          backgroundColor: 'rgba(234, 88, 12, 0.05)',
+          borderColor: '#b47b2b',
+          backgroundColor: 'transparent',
           tension: 0.2,
           yAxisID: 'y'
         },
         {
           label: currentLang === 'tr' ? 'Yağış (mm/gün)' : 'Rain (mm/day)',
           data: precData,
-          borderColor: '#0284c7',
-          backgroundColor: 'rgba(2, 132, 199, 0.15)',
+          borderColor: '#236477',
+          backgroundColor: 'rgba(35, 100, 119, 0.15)',
           tension: 0.2,
           yAxisID: 'y1'
         }
@@ -585,22 +564,24 @@ function renderTimelineChart(raw) {
         y: {
           type: 'linear',
           position: 'left',
-          grid: { color: '#f1f5f9' }
+          grid: { color: '#e5ebe0' },
+          ticks: { font: { family: 'JetBrains Mono', size: 11 } }
         },
         y1: {
           type: 'linear',
           position: 'right',
-          grid: { display: false }
+          grid: { display: false },
+          ticks: { font: { family: 'JetBrains Mono', size: 11 } }
         },
         x: {
-          grid: { display: false }
+          grid: { display: false },
+          ticks: { font: { family: 'JetBrains Mono', size: 10 } }
         }
       }
     }
   });
 }
 
-// --- Download Report Function ---
 function downloadReport() {
   if (!appState.ort || !appState.rotationResult) {
     showBanner('Lütfen önce analizi tamamlayın.');
@@ -629,24 +610,24 @@ function downloadReport() {
   ];
 
   (res.stratejiler || []).forEach((strat, i) => {
-    lines.push(`Strateji ${i + 1}: ${strat.ad}`);
-    lines.push(`  Önerilen Ürün : ${strat.bitki} (Skor: ${strat.skor}/100)`);
-    lines.push(`  Gerekçe       : ${strat.neden}`);
-    lines.push(`  Kanıt         : ${strat.kanit}`);
-    lines.push(`  Faydalar      : ${(strat.faydalar || []).join(', ')}`);
-    lines.push(`  Riskler       : ${(strat.riskler || []).join(', ')}`);
+    lines.push(`Rota ${i + 1}: ${strat.ad}`);
+    lines.push(`  Önerilen Çeşit: ${strat.bitki} (Uyum Skoru: ${strat.skor}/100)`);
+    lines.push(`  Agronomik Gerekçe: ${strat.neden}`);
+    lines.push(`  Bilimsel Kanıt   : ${strat.kanit}`);
+    lines.push(`  Kazanımlar       : ${(strat.faydalar || []).join(', ')}`);
+    lines.push(`  Risk Önlemleri   : ${(strat.riskler || []).join(', ')}`);
     lines.push('');
   });
 
   if (res.risk_uyarilari && res.risk_uyarilari.length) {
-    lines.push('3. TESPİT EDİLEN RİSKLER & UYARILAR');
+    lines.push('3. TESPİT EDİLEN RİSKLER & METEOROLOJİK UYARILAR');
     lines.push('-----------------------------------------------------');
     res.risk_uyarilari.forEach(r => lines.push(`- ${r.mesaj}`));
     lines.push('');
   }
 
-  lines.push('Veri Kaynağı: NASA POWER Daily API (power.larc.nasa.gov)');
-  lines.push('Uyarı: Bu rapor karar destek amaçlıdır.');
+  lines.push('Veri Kaynağı: NASA POWER Daily Agroclimatology (power.larc.nasa.gov)');
+  lines.push('Not: Bu rapor karar destek simülasyonudur.');
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -659,10 +640,8 @@ function downloadReport() {
   URL.revokeObjectURL(url);
 }
 
-// --- Setup City Preset Pills & Chart Tabs ---
 function setupUIListeners() {
-  // City Pills
-  document.querySelectorAll('#cityPills .pill-btn').forEach(btn => {
+  document.querySelectorAll('#cityPills .region-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const lat = parseFloat(btn.dataset.lat);
       const lon = parseFloat(btn.dataset.lon);
@@ -671,33 +650,30 @@ function setupUIListeners() {
     });
   });
 
-  // Geolocate
   document.getElementById('btnGeolocate')?.addEventListener('click', () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
         updateCoords(pos.coords.latitude, pos.coords.longitude);
         if (leafletMap) leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 10);
       }, () => {
-        showBanner('Konumunuza ulaşılamadı.');
+        showBanner('Cihaz konumuna erişilemedi.');
       });
     }
   });
 
-  // Quick Date Tags
   document.getElementById('btnLastYear')?.addEventListener('click', () => {
     startDateInput.value = '2024-01-01';
     endDateInput.value = '2024-12-31';
   });
 
   document.getElementById('btnSeasonSummer')?.addEventListener('click', () => {
-    startDateInput.value = '2024-06-01';
+    startDateInput.value = '2024-05-01';
     endDateInput.value = '2024-09-30';
   });
 
-  // Chart Tabs
-  document.querySelectorAll('.chart-tabs .tab-btn').forEach(btn => {
+  document.querySelectorAll('.tabs-group .tab-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.chart-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tabs-group .tab-toggle').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const targetId = btn.dataset.tab;
       document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
@@ -706,18 +682,12 @@ function setupUIListeners() {
     });
   });
 
-  // Download Report
   document.getElementById('btnDownloadReport')?.addEventListener('click', downloadReport);
-
-  // Analyze Button
   btnAnalyze.addEventListener('click', runFullAnalysis);
-
-  // Language Toggle
   btnLang.addEventListener('click', () => {
     setLanguage(currentLang === 'tr' ? 'en' : 'tr');
   });
 
-  // Manual Input Change for Lat/Lon
   latInput.addEventListener('change', () => {
     const lat = parseFloat(latInput.value);
     const lon = parseFloat(lonInput.value);
@@ -736,7 +706,6 @@ function setupUIListeners() {
   });
 }
 
-// --- Initialize App ---
 document.addEventListener('DOMContentLoaded', async () => {
   initLeaflet();
   await loadCrops();

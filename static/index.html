@@ -3,334 +3,295 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Field Shift — NASA Space Apps Karar Destek Aracı</title>
+  <title>Field Shift — NASA POWER Uydu Destekli Ekin Rotasyonu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="/static/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
-  <header class="app-header">
-    <div class="header-container">
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="masthead-inner">
       <div class="brand">
-        <div class="brand-icon">🌱</div>
-        <div class="brand-text">
-          <span class="brand-title">Field Shift</span>
-          <span class="brand-subtitle">NASA Space Apps &bull; Akıllı Rotasyon</span>
-        </div>
+        <h1 class="brand-title">Field Shift</h1>
+        <p class="brand-tagline">NASA POWER Agroclimatology &bull; Toprak ve İklim Odaklı Ekin Planlama</p>
       </div>
-      <div class="header-actions">
-        <div class="preset-pills" id="cityPills">
-          <button type="button" class="pill-btn" data-lat="41.0082" data-lon="28.9784">İstanbul</button>
-          <button type="button" class="pill-btn" data-lat="37.8746" data-lon="32.4932">Konya</button>
-          <button type="button" class="pill-btn" data-lat="37.0000" data-lon="35.3213">Adana</button>
-          <button type="button" class="pill-btn" data-lat="39.9334" data-lon="32.8597">Ankara</button>
-          <button type="button" class="pill-btn" data-lat="37.9158" data-lon="40.2189">Diyarbakır</button>
+      <div class="masthead-controls">
+        <div class="region-selectors" id="cityPills">
+          <span class="region-label">Hızlı Bölge:</span>
+          <button type="button" class="region-btn" data-lat="37.8746" data-lon="32.4932">Konya Ovası</button>
+          <button type="button" class="region-btn" data-lat="37.0000" data-lon="35.3213">Çukurova</button>
+          <button type="button" class="region-btn" data-lat="41.0082" data-lon="28.9784">Trakya</button>
+          <button type="button" class="region-btn" data-lat="37.9158" data-lon="40.2189">Güneydoğu</button>
         </div>
-        <button id="btnLang" class="lang-switch-btn" type="button" title="Dili Değiştir / Switch Language">
-          <span class="lang-globe">🌐</span>
-          <span id="langText">EN</span>
+        <button id="btnLang" class="lang-toggle-btn" type="button">
+          <span id="langText">English</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Notification Banner -->
+  <!-- Banner -->
   <div id="statusBanner" class="status-banner" style="display: none;">
     <span id="statusBannerText"></span>
   </div>
 
-  <!-- Main Container -->
-  <main class="app-container">
-    
-    <!-- LEFT PANEL: Parameters & Controls -->
-    <aside class="control-panel">
-      
-      <!-- 1. Location Card -->
-      <section class="panel-card">
-        <div class="card-header">
-          <div class="card-title">
-            <span class="step-num">1</span>
-            <h2 data-i18n="loc_title">Tarla Konumu</h2>
-          </div>
-          <button type="button" class="btn-text-sm" id="btnGeolocate" title="Mevcut Konumu Al">📍 Bul</button>
-        </div>
-        
-        <div class="map-wrapper">
-          <div id="map"></div>
-          <div class="map-hint" data-i18n="map_hint">Haritaya tıklayarak nokta seçebilirsiniz</div>
-        </div>
+  <!-- Workspace Grid -->
+  <main class="field-layout">
 
-        <div class="coords-row">
-          <div class="input-field">
-            <label for="latInput" data-i18n="lbl_lat">Enlem (°N)</label>
-            <input type="number" id="latInput" step="0.0001" value="41.0082">
+    <!-- Config Column -->
+    <aside class="field-sidebar">
+      
+      <!-- Field Coordinate Section -->
+      <section class="section-block">
+        <div class="section-title-row">
+          <h2 data-i18n="loc_title">Tarla Konumu</h2>
+          <button type="button" class="subtle-link" id="btnGeolocate" data-i18n="btn_locate">Cihaz Konumu</button>
+        </div>
+        <div class="map-frame">
+          <div id="map"></div>
+        </div>
+        <div class="coord-pair">
+          <div class="input-cell">
+            <span class="cell-label" data-i18n="lbl_lat">Enlem</span>
+            <input type="number" id="latInput" step="0.0001" value="37.8746">
           </div>
-          <div class="input-field">
-            <label for="lonInput" data-i18n="lbl_lon">Boylam (°E)</label>
-            <input type="number" id="lonInput" step="0.0001" value="28.9784">
+          <div class="input-cell">
+            <span class="cell-label" data-i18n="lbl_lon">Boylam</span>
+            <input type="number" id="lonInput" step="0.0001" value="32.4932">
           </div>
         </div>
       </section>
 
-      <!-- 2. Date Range Card -->
-      <section class="panel-card">
-        <div class="card-header">
-          <div class="card-title">
-            <span class="step-num">2</span>
-            <h2 data-i18n="date_title">Tarih Aralığı</h2>
-          </div>
-          <div class="date-quick-tags">
-            <button type="button" class="tag-btn" id="btnLastYear">2024</button>
-            <button type="button" class="tag-btn" id="btnSeasonSummer">Yaz Sezonu</button>
+      <!-- Planting Window Section -->
+      <section class="section-block">
+        <div class="section-title-row">
+          <h2 data-i18n="date_title">Ekim ve Gözlem Dönemi</h2>
+          <div class="period-shortcuts">
+            <button type="button" class="chip-btn" id="btnLastYear">2024</button>
+            <button type="button" class="chip-btn" id="btnSeasonSummer">Yaz Sezonu</button>
           </div>
         </div>
-
-        <div class="date-inputs-row">
-          <div class="input-field">
-            <label for="startDate" data-i18n="lbl_start">Başlangıç (Ekim)</label>
-            <input type="date" id="startDate" value="2024-06-01">
+        <div class="date-pair">
+          <div class="input-cell">
+            <span class="cell-label" data-i18n="lbl_start">Başlangıç</span>
+            <input type="date" id="startDate" value="2024-05-01">
           </div>
-          <div class="input-field">
-            <label for="endDate" data-i18n="lbl_end">Bitiş (Hasat)</label>
+          <div class="input-cell">
+            <span class="cell-label" data-i18n="lbl_end">Hasat / Bitiş</span>
             <input type="date" id="endDate" value="2024-09-30">
           </div>
         </div>
       </section>
 
-      <!-- 3. Priorities & Crop Selection Card -->
-      <section class="panel-card">
-        <div class="card-header">
-          <div class="card-title">
-            <span class="step-num">3</span>
-            <h2 data-i18n="pref_title">Çiftçi Öncelikleri & Rotasyon</h2>
-          </div>
-        </div>
+      <!-- Agronomic Preferences Section -->
+      <section class="section-block">
+        <h2 class="mb-sm" data-i18n="pref_title">Çiftlik Koşulları ve Hedefler</h2>
 
-        <div class="form-group mb-3">
-          <label for="mevcutCrop" class="field-label" data-i18n="lbl_current_crop">Şu Anda Ekili Olan Ürün:</label>
-          <select id="mevcutCrop" class="custom-select">
-            <option value="" data-i18n="opt_empty_crop">Seçilmedi (Boş tarla / Yeni ekim)</option>
+        <div class="field-select-row">
+          <label for="mevcutCrop" class="cell-label" data-i18n="lbl_current_crop">Arazideki Mevcut Ürün</label>
+          <select id="mevcutCrop" class="field-select">
+            <option value="" data-i18n="opt_empty_crop">Seçilmedi (Boş tarla / Nadas)</option>
           </select>
         </div>
 
-        <div class="slider-group">
-          <div class="slider-item">
-            <div class="slider-labels">
-              <span data-i18n="p_water">💧 Su Tasarrufu</span>
-              <span class="slider-val" id="val_p_su">50</span>
+        <div class="weights-list">
+          <div class="weight-row">
+            <div class="weight-label-row">
+              <span data-i18n="p_water">Su Tasarrufu</span>
+              <span class="mono-num" id="val_p_su">50</span>
             </div>
-            <input type="range" id="p_su" min="0" max="100" value="50" class="custom-slider">
+            <input type="range" id="p_su" min="0" max="100" value="50" class="field-slider">
           </div>
 
-          <div class="slider-item">
-            <div class="slider-labels">
-              <span data-i18n="p_soil">🌿 Toprak Sağlığı</span>
-              <span class="slider-val" id="val_p_toprak">50</span>
+          <div class="weight-row">
+            <div class="weight-label-row">
+              <span data-i18n="p_soil">Toprak Sağlığı ve Azot</span>
+              <span class="mono-num" id="val_p_toprak">50</span>
             </div>
-            <input type="range" id="p_toprak" min="0" max="100" value="50" class="custom-slider">
+            <input type="range" id="p_toprak" min="0" max="100" value="50" class="field-slider">
           </div>
 
-          <div class="slider-item">
-            <div class="slider-labels">
-              <span data-i18n="p_yield">📈 Kararlı Verim</span>
-              <span class="slider-val" id="val_p_kara">50</span>
+          <div class="weight-row">
+            <div class="weight-label-row">
+              <span data-i18n="p_yield">Kararlı Verim Güvencesi</span>
+              <span class="mono-num" id="val_p_kara">50</span>
             </div>
-            <input type="range" id="p_kara" min="0" max="100" value="50" class="custom-slider">
+            <input type="range" id="p_kara" min="0" max="100" value="50" class="field-slider">
           </div>
 
-          <div class="slider-item">
-            <div class="slider-labels">
-              <span data-i18n="p_resilience">🛡️ Zorlu Koşul Direnci</span>
-              <span class="slider-val" id="val_p_guclu">50</span>
+          <div class="weight-row">
+            <div class="weight-label-row">
+              <span data-i18n="p_resilience">Aşırı Hava Olaylarına Direnç</span>
+              <span class="mono-num" id="val_p_guclu">50</span>
             </div>
-            <input type="range" id="p_guclu" min="0" max="100" value="50" class="custom-slider">
+            <input type="range" id="p_guclu" min="0" max="100" value="50" class="field-slider">
           </div>
         </div>
 
-        <!-- Advanced Toggle (Scenario / Constraints) -->
-        <details class="advanced-details">
-          <summary class="advanced-summary" data-i18n="advanced_title">⚙️ Gelişmiş Senaryo & Kısıtlar</summary>
-          <div class="advanced-body">
-            
-            <div class="sub-form-group">
-              <label data-i18n="lbl_precip_change">Yağış Değişimi Simülasyonu (%)</label>
-              <div class="slider-with-bubble">
-                <input type="range" id="sc_precip" min="-50" max="50" value="0" step="5" class="custom-slider">
-                <span id="val_sc_precip" class="bubble">0%</span>
+        <!-- Practical Constraints Accordion -->
+        <details class="constraints-drawer">
+          <summary class="drawer-summary" data-i18n="advanced_title">Sulama ve İklim Simülasyonu</summary>
+          <div class="drawer-content">
+            <div class="sub-slider-row">
+              <div class="weight-label-row">
+                <span data-i18n="lbl_precip_change">Yağış Sapması</span>
+                <span class="mono-num" id="val_sc_precip">0%</span>
               </div>
+              <input type="range" id="sc_precip" min="-50" max="50" value="0" step="5" class="field-slider">
             </div>
 
-            <div class="sub-form-group">
-              <label data-i18n="lbl_temp_change">Sıcaklık Değişimi Simülasyonu (°C)</label>
-              <div class="slider-with-bubble">
-                <input type="range" id="sc_temp" min="-5" max="5" value="0" step="0.5" class="custom-slider">
-                <span id="val_sc_temp" class="bubble">0°C</span>
+            <div class="sub-slider-row">
+              <div class="weight-label-row">
+                <span data-i18n="lbl_temp_change">Sıcaklık Sapması</span>
+                <span class="mono-num" id="val_sc_temp">0°C</span>
               </div>
+              <input type="range" id="sc_temp" min="-5" max="5" value="0" step="0.5" class="field-slider">
             </div>
 
-            <div class="grid-2-col">
-              <div class="sub-form-group">
-                <label for="c_irrigation" data-i18n="lbl_irrigation">Sulama Durumu</label>
-                <select id="c_irrigation" class="custom-select-sm">
-                  <option value="" data-i18n="opt_irr_any">Farketmez / Belirtilmemiş</option>
-                  <option value="yes" data-i18n="opt_irr_yes">Sulama Var</option>
-                  <option value="no" data-i18n="opt_irr_no">Sulama Yok (Kuru)</option>
+            <div class="drawer-selects">
+              <div class="field-select-row">
+                <label for="c_irrigation" class="cell-label" data-i18n="lbl_irrigation">Sulama İmkanı</label>
+                <select id="c_irrigation" class="field-select">
+                  <option value="" data-i18n="opt_irr_any">Belirtilmemiş</option>
+                  <option value="yes" data-i18n="opt_irr_yes">Sulu Tarım</option>
+                  <option value="no" data-i18n="opt_irr_no">Kuru Tarım</option>
                 </select>
               </div>
-              <div class="sub-form-group">
-                <label for="c_market" data-i18n="lbl_market">Pazar Hedefi</label>
-                <select id="c_market" class="custom-select-sm">
-                  <option value="" data-i18n="opt_mkt_any">Tümü</option>
-                  <option value="kislik" data-i18n="opt_mkt_kislik">Kışlık Ürünler</option>
-                  <option value="yazlik" data-i18n="opt_mkt_yazlik">Yazlık Ürünler</option>
-                  <option value="bahar" data-i18n="opt_mkt_bahar">Bahar Ürünleri</option>
+              <div class="field-select-row">
+                <label for="c_market" class="cell-label" data-i18n="lbl_market">Ürün Grubu</label>
+                <select id="c_market" class="field-select">
+                  <option value="" data-i18n="opt_mkt_any">Tüm Sezonlar</option>
+                  <option value="kislik" data-i18n="opt_mkt_kislik">Kışlık</option>
+                  <option value="yazlik" data-i18n="opt_mkt_yazlik">Yazlık</option>
+                  <option value="bahar" data-i18n="opt_mkt_bahar">Bahar</option>
                 </select>
               </div>
             </div>
-
           </div>
         </details>
 
-        <!-- Big Action Button -->
-        <button type="button" id="btnAnalyze" class="btn-primary-action">
+        <button type="button" id="btnAnalyze" class="field-primary-btn">
           <span class="btn-spinner" style="display: none;"></span>
-          <span class="btn-label" data-i18n="btn_run_analysis">NASA Verisini Çek & Analiz Et</span>
+          <span class="btn-label" data-i18n="btn_run_analysis">NASA İklim Verisini Getir ve Analiz Et</span>
         </button>
       </section>
 
     </aside>
 
-    <!-- RIGHT PANEL: Dashboard & Results -->
-    <section class="results-dashboard">
+    <!-- Main Working Stage -->
+    <section class="field-stage">
 
-      <!-- Initial Welcome State (Shown before first search) -->
-      <div id="welcomePlaceholder" class="welcome-box">
-        <div class="welcome-graphic">🛰️</div>
-        <h2 data-i18n="welcome_title">NASA POWER Verileriyle Ekin Önerisi Alın</h2>
-        <p data-i18n="welcome_desc">Sol panelden tarlanızı haritada seçip tarih aralığını belirleyin, ardından <strong>"NASA Verisini Çek & Analiz Et"</strong> butonuna basın.</p>
-        <div class="feature-bullets">
-          <div class="bullet-item"><span>🌤️</span> <div><strong>Gerçek Zamanlı İklim:</strong> Sıcaklık, yağış, güneşlenme ve rüzgar verileri.</div></div>
-          <div class="bullet-item"><span>🌱</span> <div><strong>3 Rotasyon Stratejisi:</strong> Toprak sağlığı, su tasarrufu veya mevcut verim koruma.</div></div>
-          <div class="bullet-item"><span>⚠️</span> <div><strong>Akıllı Risk Uyarıları:</strong> Kuraklık, don ve aşırı sıcaklık olasılıkları.</div></div>
+      <!-- Initial State Notice -->
+      <div id="welcomePlaceholder" class="initial-brief">
+        <h2 class="brief-headline" data-i18n="welcome_title">NASA POWER agroclimatology verileriyle optimize edilmiş rotasyon modeli.</h2>
+        <p class="brief-body" data-i18n="welcome_desc">Sol panelden arazi koordinatlarını ve inceleme mevsimini belirleyip analizi başlatın. Model; geçmiş sıcaklık, kuraklık indisi, solar radyasyon ve buharlaşma dengesini bitki biyolojisi limitleriyle eşleştirir.</p>
+        <div class="agri-pillars">
+          <div class="pillar">
+            <h3 data-i18n="pil_1_title">Toprak Yenileme</h3>
+            <p data-i18n="pil_1_desc">Baklagil ve derin köklü bitkilerle kimyasal gübre gereksinimini azaltan azot dengesi.</p>
+          </div>
+          <div class="pillar">
+            <h3 data-i18n="pil_2_title">Su Bütçesi</h3>
+            <p data-i18n="pil_2_desc">Bölgenin efektif yağış dağılımına göre yeraltı su çekimini minimize eden öneriler.</p>
+          </div>
+          <div class="pillar">
+            <h3 data-i18n="pil_3_title">Risk Savunması</h3>
+            <p data-i18n="pil_3_desc">Don, polenleşme döneminde aşırı ısı dalgası ve nem stresine karşı dayanıklı rotalar.</p>
+          </div>
         </div>
       </div>
 
-      <!-- Live Dashboard Content (Hidden until analysis runs) -->
+      <!-- Analysis Results Presentation -->
       <div id="analysisContent" style="display: none;">
         
-        <!-- Risk Warnings Row -->
-        <div id="riskWarningsRow" class="risk-warnings-row" style="display: none;"></div>
+        <!-- Field Risk Notice -->
+        <div id="riskWarningsRow" class="risk-notice-stack" style="display: none;"></div>
 
-        <!-- Metric Badges Row -->
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-icon">🌡️</div>
-            <div class="metric-body">
-              <span class="metric-title" data-i18n="m_temp">Ort. Sıcaklık</span>
-              <div class="metric-value"><span id="valTemp">--</span> <span class="unit">°C</span></div>
-            </div>
+        <!-- Agro-Climate Sensor Strip -->
+        <div class="sensor-ledger">
+          <div class="ledger-item">
+            <span class="ledger-title" data-i18n="m_temp">Ortalama Sıcaklık</span>
+            <div class="ledger-num"><span id="valTemp">--</span><span class="unit">°C</span></div>
           </div>
-          <div class="metric-card">
-            <div class="metric-icon">💧</div>
-            <div class="metric-body">
-              <span class="metric-title" data-i18n="m_precip">Günlük Yağış</span>
-              <div class="metric-value"><span id="valPrecip">--</span> <span class="unit">mm</span></div>
-            </div>
+          <div class="ledger-item">
+            <span class="ledger-title" data-i18n="m_precip">Günlük Yağış</span>
+            <div class="ledger-num"><span id="valPrecip">--</span><span class="unit">mm</span></div>
           </div>
-          <div class="metric-card">
-            <div class="metric-icon">☀️</div>
-            <div class="metric-body">
-              <span class="metric-title" data-i18n="m_solar">Güneş Enerjisi</span>
-              <div class="metric-value"><span id="valSolar">--</span> <span class="unit">MJ/m²</span></div>
-            </div>
+          <div class="ledger-item">
+            <span class="ledger-title" data-i18n="m_solar">Solar Radyasyon</span>
+            <div class="ledger-num"><span id="valSolar">--</span><span class="unit">MJ/m²</span></div>
           </div>
-          <div class="metric-card">
-            <div class="metric-icon">💨</div>
-            <div class="metric-body">
-              <span class="metric-title" data-i18n="m_wind">Rüzgar Hızı</span>
-              <div class="metric-value"><span id="valWind">--</span> <span class="unit">m/s</span></div>
-            </div>
+          <div class="ledger-item">
+            <span class="ledger-title" data-i18n="m_wind">Rüzgar Hızı</span>
+            <div class="ledger-num"><span id="valWind">--</span><span class="unit">m/s</span></div>
           </div>
         </div>
 
-        <!-- Featured Best Recommendation Banner -->
-        <div class="featured-crop-banner" id="featuredCropCard">
-          <div class="featured-left">
-            <span class="badge-accent" data-i18n="best_match_badge">⭐ En Yüksek Uyumlu Ekin</span>
-            <h2 id="bestCropName" class="featured-crop-title">--</h2>
-            <p id="bestCropSub" class="featured-crop-desc">İklim ve önceliklerinize göre optimize edilmiş 1. tercih.</p>
+        <!-- Primary Recommendation Statement -->
+        <article class="decision-sheet" id="featuredCropCard">
+          <div class="decision-header">
+            <span class="decision-tag" data-i18n="best_match_badge">Birincil Ekin Tavsiyesi</span>
+            <h2 id="bestCropName" class="decision-crop">--</h2>
+            <p id="bestCropSub" class="decision-rationale">Arazi iklim koşulları ve toprak hedefleri doğrultusunda en yüksek uyum indeksine sahip çeşit.</p>
           </div>
-          <div class="featured-right">
-            <div class="score-circle">
-              <span id="bestCropScore" class="score-num">--</span>
-              <span class="score-lbl" data-i18n="score_label">/ 100</span>
-            </div>
+          <div class="decision-score-stamp">
+            <div class="stamp-value" id="bestCropScore">--</div>
+            <div class="stamp-label" data-i18n="score_label">Uyum İndeksi (0-100)</div>
           </div>
+        </article>
+
+        <!-- 3 Agronomic Strategies Matrix -->
+        <div class="strategy-matrix-head">
+          <h3 data-i18n="strategies_heading">Üç Rotasyon Rotası</h3>
+          <p data-i18n="strategies_sub">Çiftlik yönetim stratejinize uygun olan ekseni tercih edebilirsiniz.</p>
         </div>
 
-        <!-- 3 Strategies Section -->
-        <div class="section-heading">
-          <h3 data-i18n="strategies_heading">🎯 3 Farklı Rotasyon Stratejisi</h3>
-          <span class="section-sub" data-i18n="strategies_sub">Hedefinize göre en uygun planı seçin</span>
-        </div>
-
-        <div class="strategies-grid" id="strategiesContainer">
+        <div class="strategy-columns" id="strategiesContainer">
           <!-- Dynamically populated -->
         </div>
 
-        <!-- Charts Tabs / Container -->
-        <div class="charts-card">
-          <div class="charts-header">
-            <div class="chart-tabs">
-              <button type="button" class="tab-btn active" data-tab="tabStress" data-i18n="tab_stress">📅 12 Aylık Stres & Büyüme Takvimi</button>
-              <button type="button" class="tab-btn" data-tab="tabTimeline" data-i18n="tab_timeline">📈 Günlük NASA Ölçümleri</button>
+        <!-- Climatological Stress Ledger -->
+        <section class="ledger-section">
+          <div class="ledger-section-head">
+            <div class="tabs-group">
+              <button type="button" class="tab-toggle active" data-tab="tabStress" data-i18n="tab_stress">12 Aylık İklim Stresi & Büyüme Modeli</button>
+              <button type="button" class="tab-toggle" data-tab="tabTimeline" data-i18n="tab_timeline">Günlük NASA POWER Ölçümleri</button>
             </div>
-            <button type="button" class="btn-download-report" id="btnDownloadReport">
-              <span>📥</span> <span data-i18n="btn_report">Rapor İndir (.txt)</span>
+            <button type="button" class="download-ledger-btn" id="btnDownloadReport" data-i18n="btn_report">
+              Saha Raporu İndir (.txt)
             </button>
           </div>
 
-          <div class="chart-content">
+          <div class="chart-display-frame">
             <div id="tabStress" class="tab-pane active">
-              <div class="chart-canvas-container">
+              <div class="chart-frame-box">
                 <canvas id="stressChart"></canvas>
               </div>
-              <div class="chart-legend-custom">
-                <span class="legend-dot" style="background:#f97316;"></span> <span data-i18n="leg_temp">Sıcaklık Stresi</span>
-                <span class="legend-dot" style="background:#0284c7; margin-left:14px;"></span> <span data-i18n="leg_water">Su Stresi</span>
-                <span class="legend-dot" style="background:#16a34a; margin-left:14px;"></span> <span data-i18n="leg_ndvi">NDVI (Bitki Gelişim Tahmini)</span>
+              <div class="chart-legend-strip">
+                <span class="key-item"><span class="key-color" style="background:#b47b2b;"></span> <span data-i18n="leg_temp">Sıcaklık Stresi</span></span>
+                <span class="key-item"><span class="key-color" style="background:#236477;"></span> <span data-i18n="leg_water">Su Eksikliği / Kuraklık</span></span>
+                <span class="key-item"><span class="key-color" style="background:#286638;"></span> <span data-i18n="leg_ndvi">NDVI Büyüme Eğrisi</span></span>
               </div>
             </div>
 
             <div id="tabTimeline" class="tab-pane" style="display: none;">
-              <div class="chart-canvas-container">
+              <div class="chart-frame-box">
                 <canvas id="timelineChart"></canvas>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- NASA & Scientific References Footer -->
-        <div class="science-footer">
-          <div class="sci-item">
-            <span class="sci-icon">🛰️</span>
-            <div>
-              <strong>NASA POWER API:</strong> Daily Agroclimatology (T2M, PRECTOTCORR, ALLSKY_SFC_SW_DWN, WS2M).
-            </div>
-          </div>
-          <div class="sci-item">
-            <span class="sci-icon">⚖️</span>
-            <div>
-              <strong data-i18n="disclaimer_title">Karar Destek Notu:</strong>
-              <span data-i18n="disclaimer_text">Bu sistem karar destek amaçlı bir simülasyondur. Saha ekimi öncesi il/ilçe tarım müdürlükleri ve ziraat mühendisleri görüşü esastır.</span>
-            </div>
-          </div>
-        </div>
+        <!-- Source Disclosures -->
+        <footer class="field-disclosures">
+          <p><strong>Veri Altyapısı:</strong> NASA POWER Daily Agroclimatology (T2M, PRECTOTCORR, ALLSKY_SFC_SW_DWN, WS2M parametreleri point-query API üzerinden derlenmektedir).</p>
+          <p><strong>Danışma Notu:</strong> Bu araç agronomi karar destek amaçlı geliştirilmiştir. Saha ekiminden önce yerel toprak tahlili ve il/ilçe tarım mühendisliği teyidi önerilir.</p>
+        </footer>
 
       </div> <!-- /analysisContent -->
 
