@@ -798,10 +798,12 @@ body {
   color: var(--c-earth-deep);
 }
 
-/* Responsive */
+/* Responsive Adjustments & Touch Polish */
 @media (max-width: 1100px) {
   .field-layout {
     grid-template-columns: 1fr;
+    padding: 0 20px 48px;
+    gap: 24px;
   }
   .strategy-columns {
     grid-template-columns: 1fr;
@@ -812,17 +814,89 @@ body {
 }
 
 @media (max-width: 640px) {
+  .masthead {
+    padding: 12px 16px;
+  }
+  .brand-title {
+    font-size: 22px;
+  }
+  .brand-tagline {
+    font-size: 11px;
+  }
   .region-selectors {
     display: none;
   }
+  .field-layout {
+    margin: 16px auto;
+    padding: 0 12px 36px;
+  }
+  .section-block, .initial-brief, .ledger-section {
+    padding: 16px;
+  }
+  .brief-headline {
+    font-size: 22px;
+  }
   .agri-pillars {
     grid-template-columns: 1fr;
+    gap: 16px;
+    padding-top: 20px;
+  }
+  .sensor-ledger {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ledger-item {
+    padding: 12px 14px;
+  }
+  .ledger-num {
+    font-size: 20px;
   }
   .decision-sheet {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 20px;
+    gap: 16px;
+  }
+  .decision-crop {
+    font-size: 26px;
   }
   .decision-score-stamp {
     width: 100%;
+    padding: 12px;
+  }
+  .stamp-value {
+    font-size: 28px;
+  }
+  .coord-pair, .date-pair, .drawer-selects {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .tabs-group {
+    width: 100%;
+  }
+  .tab-toggle {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .download-ledger-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .chart-frame-box {
+    height: 180px;
+  }
+  .chart-legend-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .field-primary-btn {
+    height: 52px; /* Ergonomic touch target */
+    font-size: 15px;
+  }
+  .field-slider::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px; /* Easy thumb grab on touch */
   }
 }
