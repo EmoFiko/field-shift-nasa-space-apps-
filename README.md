@@ -1,43 +1,38 @@
 # Field Shift — NASA Space Apps Challenge 2026
 
 ## Hakkında
-**"Field Shift: Adapting Farms with NASA Data"** challenge'ı için geliştirdiğimiz
-Streamlit tabanlı karar destek prototipi.
+NASA POWER iklim verileri ile çiftçilere akıllı bitki döngüsü (crop rotation) önerisi sunan decision-support prototipi.
 
-NASA uydu verileri (SMAP, GPM, Landsat, ECOSTRESS, SRTM, NASA POWER) ile yerel
-toprak/ülke bilgilerini birleştirerek çiftçilere **ürün döndürme (crop rotation)**
-stratejilerini karşılaştıran bir araç.
-
-## Kurulum ve Çalıştırma
-
-```bash
-cd field_shift_app
-pip install -r requirements.txt
-streamlit run app.py
+## Klasör yapısı
+```
+spaceapps_proj/
+  server.py          # HTTP API + arayüz sunucu (port 5000)
+  data/crops.json    # Türkiye odaklı bitki veritabanı (iklim koşulları)
+  logic/rotation.py  # İklim skoru + öncelik ağırlıklı rotasyon motoru
+  static/
+    index.html       # Tek sayfa arayüz
+    style.css        # Stil
+    app.js           # İstemci mantığı
 ```
 
-## Özellikler
+## Nasıl çalıştırılır
+```bash
+cd ~/temp/nasa/spaceapps_proj
+python3 server.py
+# tarayıcıda: http://localhost:5000
+```
 
-- 🛰️ **NASA veri kartı:** SMAP土壌 nemi, GPM yağış, Landsat NDVI, ECOSTRESS yüzey sıcaklığı, SRTM eşya yüksekliği ve türetilmiş stres endeksleri.
-- 🗺️ **Konum haritası:** Folium ile işaretli tarla merkezi ve su stresi çevreleyici.
-- 📊 **En az 4 strateji karşılaştırması:** Mevcut döndürme + Toprak Sağlığı + Su Tasarrufu + Gelir/Pazar odaklı seçenekler.
-- 🧮 **Skorlama:** Toprak sağlığı, su verimliliği, erozyon azaltma, zarar kıracı etki, gelir potansieli, iklim dayanışma.
-- 📝 **Her strateji için:** Fayda, bilgi boşluğu, risk, kanıt ve yerel inceleme listesi.
-- 💾 **Rapor indirme:** TXT formatında özet rapor.
+## API
+- `GET /` — arayüz
+- `GET /api/bitkiler` — bitki veritabanı
+- `POST /api/analiz` — `{lat, lon, start, end}` → NASA POWER ortalama iklim verisi
+- `POST /api/rotasyon` — `{ortalama, oncelikler, mevcut}` → skorlu bitki önerileri + rota önerisi
 
-## NASA Challenge Uyumu
+## Veri kaynağı
+NASA POWER Daily API (`power.larc.nasa.gov`), kimsecretsiz, sıcaklık/yağış/güneş/rüzgar.
 
-| Challenge gereksinimi | Uygulama |
-|---|---|
-| NASA Earth observations | SMAP, GPM, Landsat, ECOSTRESS, SRTM, NASA POWER yapısı |
-| Yerel土土/ülke bilgisi | Kullanıcı konumu ve öncelik girdileri |
-| En az 3 rotation stratejisi | 4 strateji (mevcut dahil) |
-| Her strateji için neden/kanıt/fayda/risk | Detay akordion kartlarında |
-| Farmer-centered design | Basit slider girdileri, indirilebilir rapor |
-| Yerel uzmanlaşmayı desteklemek | "Yerel inceleme gerekli" uyarıları |
-
-## Not (Prototip)
-Bu demo'da gerçek NASA Earthdata API yerine, NASA parametre isimlerini ve ölçeklerini yansıtan belirli konumlara göre üretilen sentetik veri kullanılmıştır. Gerçek kayıtlar için Earthdata/DAAC API entegrasyonu ve USDA SSURGO/CDL verileri eklenmelidir.
-
-## Lisans
-Açık kaynak (hackathon prototipi).
+## Space Apps kriterleriyle ilişki
+- **NASA Veri Entegrasyonu:** POWER API'dan alınan sıcaklık, yağış, güneş ışınması.
+- **Yerel bilgi:** `data/crops.json` içinde Türkiye bitkileri ve toplantı koşulları.
+- **Çiftçi öncelikleri:** Su tasarrufu, toprak sağlığı, kararlı verim, koşula dayanıklılık ağırlıkları.
+- **Rotasyon:** Mevcut bitkiye göre farklı grubun bir sonraki önerisi.
