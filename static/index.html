@@ -90,45 +90,50 @@
 
       <!-- Agronomic Preferences Section -->
       <section class="section-block">
-        <h2 class="mb-sm" data-i18n="pref_title">Çiftlik Koşulları ve Hedefler</h2>
+        <h2 class="mb-sm" data-i18n="pref_title">Tarlanız İçin Ne İstiyorsunuz?</h2>
+        <p class="section-helper" data-i18n="pref_helper">Aşağıdaki çubukları ihtiyacınıza göre kaydırın; öneriler anında değişir.</p>
 
         <div class="field-select-row">
-          <label for="mevcutCrop" class="cell-label" data-i18n="lbl_current_crop">Arazideki Mevcut Ürün</label>
+          <label for="mevcutCrop" class="cell-label" data-i18n="lbl_current_crop">Şu an tarlada ne ekili?</label>
           <select id="mevcutCrop" class="field-select">
-            <option value="" data-i18n="opt_empty_crop">Seçilmedi (Boş tarla / Nadas)</option>
+            <option value="" data-i18n="opt_empty_crop">Boş / Nadas (Yeni ürün ekeceğim)</option>
           </select>
         </div>
 
         <div class="weights-list">
           <div class="weight-row">
             <div class="weight-label-row">
-              <span data-i18n="p_water">Su Tasarrufu</span>
+              <span class="weight-main" data-i18n="p_water">Az Su İstesin (Kuraklığa Dayanıklı)</span>
               <span class="mono-num" id="val_p_su">50</span>
             </div>
+            <p class="weight-desc" data-i18n="p_water_sub">Sulama az olsun, masraf çıkarma riski düşsün</p>
             <input type="range" id="p_su" min="0" max="100" value="50" class="field-slider">
           </div>
 
           <div class="weight-row">
             <div class="weight-label-row">
-              <span data-i18n="p_soil">Toprak Sağlığı ve Azot</span>
+              <span class="weight-main" data-i18n="p_soil">Toprağı Dinlendirsin ve Gübrelesin</span>
               <span class="mono-num" id="val_p_toprak">50</span>
             </div>
+            <p class="weight-desc" data-i18n="p_soil_sub">Tarlayı yormasın, toprağa güç versin, gübre masrafını azaltsın</p>
             <input type="range" id="p_toprak" min="0" max="100" value="50" class="field-slider">
           </div>
 
           <div class="weight-row">
             <div class="weight-label-row">
-              <span data-i18n="p_yield">Kararlı Verim Güvencesi</span>
+              <span class="weight-main" data-i18n="p_yield">Garanti ve Düzenli Mahsul</span>
               <span class="mono-num" id="val_p_kara">50</span>
             </div>
+            <p class="weight-desc" data-i18n="p_yield_sub">Maceraya girmeyelim, her sene bilinen düzenli ürünü versin</p>
             <input type="range" id="p_kara" min="0" max="100" value="50" class="field-slider">
           </div>
 
           <div class="weight-row">
             <div class="weight-label-row">
-              <span data-i18n="p_resilience">Aşırı Hava Olaylarına Direnç</span>
+              <span class="weight-main" data-i18n="p_resilience">Sıcağa ve Dona Karşı Sağlamlık</span>
               <span class="mono-num" id="val_p_guclu">50</span>
             </div>
+            <p class="weight-desc" data-i18n="p_resilience_sub">Ani ayaz, don veya aşırı sıcak vurduğunda yanmasın</p>
             <input type="range" id="p_guclu" min="0" max="100" value="50" class="field-slider">
           </div>
         </div>
