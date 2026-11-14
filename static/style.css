@@ -592,28 +592,102 @@ body {
   max-width: 580px;
 }
 
-.decision-score-stamp {
-  border: 1px solid var(--c-border-strong);
-  background: var(--c-field-canvas);
-  border-radius: var(--radius-field);
-  padding: 16px 20px;
-  text-align: center;
-  min-width: 140px;
+/* Choice Pills for Farmer Priorities */
+.choice-pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
 }
 
-.stamp-value {
-  font-family: var(--font-mono);
-  font-size: 36px;
+.choice-pill {
+  flex: 1;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-earth-body);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: var(--radius-sharp);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  line-height: 1.25;
+}
+
+.choice-pill:hover {
+  background: var(--c-surface-hover);
+  border-color: var(--c-border-strong);
+}
+
+.choice-pill.active {
+  background: var(--c-crop-green);
+  border-color: var(--c-crop-green);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Decision Sheet Farmer Ledger */
+.decision-right-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 260px;
+}
+
+.judgment-badge {
+  background: var(--c-crop-green-tint);
+  border: 1px solid rgba(37, 93, 54, 0.25);
+  border-radius: var(--radius-field);
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.judgment-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 20px;
   font-weight: 600;
   color: var(--c-crop-green);
-  line-height: 1;
+  line-height: 1.2;
 }
 
-.stamp-label {
-  font-size: 11px;
+.judgment-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--c-earth-body);
+  margin-top: 3px;
+}
+
+.farmer-ledger-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.f-ledger-item {
+  background: var(--c-field-canvas);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sharp);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.f-ledger-label {
+  display: block;
+  font-size: 10px;
   font-weight: 600;
   color: var(--c-earth-muted);
-  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.f-ledger-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-earth-deep);
 }
 
 /* 3 Strategy Columns */

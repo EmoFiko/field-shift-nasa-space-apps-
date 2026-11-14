@@ -121,6 +121,35 @@ const I18N = {
   }
 };
 
+const CROP_METRICS = {
+  nohut: { ratio_tr: "1'e 10 Verir", ratio_en: "Yields 1:10", yield_tr: "160 - 200 kg / dönüm", yield_en: "1.6 - 2.0 t/ha" },
+  mercan: { ratio_tr: "1'e 12 Verir", ratio_en: "Yields 1:12", yield_tr: "180 - 230 kg / dönüm", yield_en: "1.8 - 2.3 t/ha" },
+  buğday: { ratio_tr: "1'e 8 Verir", ratio_en: "Yields 1:8", yield_tr: "280 - 380 kg / dönüm", yield_en: "2.8 - 3.8 t/ha" },
+  arpa: { ratio_tr: "1'e 9 Verir", ratio_en: "Yields 1:9", yield_tr: "300 - 420 kg / dönüm", yield_en: "3.0 - 4.2 t/ha" },
+  mısır: { ratio_tr: "1'e 14 Verir", ratio_en: "Yields 1:14", yield_tr: "950 - 1.250 kg / dönüm", yield_en: "9.5 - 12.5 t/ha" },
+  bezelye: { ratio_tr: "1'e 10 Verir", ratio_en: "Yields 1:10", yield_tr: "200 - 260 kg / dönüm", yield_en: "2.0 - 2.6 t/ha" },
+  patates: { ratio_tr: "1'e 6 Verir", ratio_en: "Yields 1:6", yield_tr: "2.500 - 3.500 kg / dönüm", yield_en: "25 - 35 t/ha" },
+  domates: { ratio_tr: "1'e 15 Verir", ratio_en: "Yields 1:15", yield_tr: "4.000 - 6.000 kg / dönüm", yield_en: "40 - 60 t/ha" }
+};
+
+function getFarmerJudgment(score, lang) {
+  if (score >= 75) {
+    return {
+      title: lang === 'tr' ? 'Tam Tarlanın Malı' : 'Prime Field Match',
+      sub: lang === 'tr' ? 'Bu hava ve toprakta gözün kapalı ekebilirsin' : 'Ideal climate & soil conditions with minimum risk'
+    };
+  } else if (score >= 50) {
+    return {
+      title: lang === 'tr' ? 'Güzel Tutar (Bakım İster)' : 'Good Fit (Requires Care)',
+      sub: lang === 'tr' ? 'Sulamayı ve zamanında bakımı aksatmazsan iyi ürün verir' : 'Healthy yields expected with steady irrigation & care'
+    };
+  } else {
+    return {
+      title: lang === 'tr' ? 'Tarlayı Yorma (Riskli)' : 'High Risk for Field',
+      sub: lang === 'tr' ? 'Bu sezon iklim ve su şartları masrafını zor kurtarır' : 'Climate stress may suppress yield below investment cost'
+    };
+  }
+}
 let currentLang = 'tr';
 let appState = {
   ort: null,
@@ -140,10 +169,10 @@ const pToprak = document.getElementById('p_toprak');
 const pKara = document.getElementById('p_kara');
 const pGuclu = document.getElementById('p_guclu');
 
-const valPSu = document.getElementById('val_p_su');
-const valPToprak = document.getElementById('val_p_toprak');
-const valPKara = document.getElementById('val_p_kara');
-const valPGuclu = document.getElementById('val_p_guclu');
+const judgmentTitle = document.getElementById('judgmentTitle');
+const judgmentSub = document.getElementById('judgmentSub');
+const bestYieldRatio = document.getElementById('bestYieldRatio');
+const bestYieldPerDecare = document.getElementById('bestYieldPerDecare');
 
 const scPrecip = document.getElementById('sc_precip');
 const scTemp = document.getElementById('sc_temp');
@@ -248,18 +277,18 @@ async function loadCrops() {
   }
 }
 
-function initSliders() {
-  const sliders = [
-    { input: pSu, val: valPSu },
-    { input: pToprak, val: valPToprak },
-    { input: pKara, val: valPKara },
-    { input: pGuclu, val: valPGuclu }
-  ];
-
-  sliders.forEach(({ input, val }) => {
-    input.addEventListener('input', () => {
-      val.textContent = input.value;
-      if (appState.ort) debounceRotation();
+function initPills() {
+  document.querySelectorAll('.choice-pills').forEach(group => {
+    const parentRow = group.closest('.weight-row');
+    const hiddenInput = parentRow.querySelector('input[type="hidden"]');
+    
+    group.querySelectorAll('.choice-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.choice-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        hiddenInput.value = btn.dataset.val;
+        if (appState.ort) debounceRotation();
+      });
     });
   });
 
@@ -428,12 +457,23 @@ function renderResultsUI(data) {
     riskWarningsRow.style.display = 'none';
   }
 
-  // Hero Crop Sheet
+  // Hero Crop Sheet & Farmer Judgment
   if (data.en_iyi_bitki) {
+    const bitkiKey = data.en_iyi_bitki.anahtar || '';
     bestCropName.textContent = data.en_iyi_bitki.bitki;
-    bestCropScore.textContent = data.en_iyi_bitki.skor;
+    
+    // Farmer Judgment
+    const judgment = getFarmerJudgment(data.en_iyi_bitki.skor, currentLang);
+    judgmentTitle.textContent = judgment.title;
+    judgmentSub.textContent = judgment.sub;
+
+    // Quantitative metrics
+    const metrics = CROP_METRICS[bitkiKey] || { ratio_tr: "1'e 8-10 Verir", ratio_en: "Yields 1:8-10", yield_tr: "200 - 300 kg / dönüm", yield_en: "2.0 - 3.0 t/ha" };
+    bestYieldRatio.textContent = currentLang === 'tr' ? metrics.ratio_tr : metrics.ratio_en;
+    bestYieldPerDecare.textContent = currentLang === 'tr' ? metrics.yield_tr : metrics.yield_en;
+
     const grup = data.en_iyi_bitki.grup ? ` • ${data.en_iyi_bitki.grup.toUpperCase()}` : '';
-    bestCropSub.textContent = (currentLang === 'tr' ? 'Mevcut iklim rejimine ve toprak onarım hedeflerine en yüksek uyumu sağlayan ana çeşit' : 'Highest suitability match for local climatology and target rotation') + grup;
+    bestCropSub.textContent = (currentLang === 'tr' ? 'Mevcut iklim rejimine ve toprak hedeflerinize en yüksek bereketi sağlayan ana ürün' : 'Highest yielding and most suitable crop for your field conditions') + grup;
   }
 
   // 3 Columns Matrix
@@ -719,6 +759,6 @@ function setupUIListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
   initLeaflet();
   await loadCrops();
-  initSliders();
+  initPills();
   setupUIListeners();
 });

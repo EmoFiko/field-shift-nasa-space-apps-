@@ -90,40 +90,56 @@
         </div>
 
         <div class="weights-list">
-          <div class="weight-row">
+          <div class="weight-row" data-pref="p_water">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_water">Az Su İstesin (Kuraklığa Dayanıklı)</span>
-              <span class="mono-num" id="val_p_su">50</span>
+              <span class="weight-main" data-i18n="p_water">Su Durumu (Sulama İhtiyacı)</span>
             </div>
-            <p class="weight-desc" data-i18n="p_water_sub">Sulama az olsun, masraf çıkarma riski düşsün</p>
-            <input type="range" id="p_su" min="0" max="100" value="50" class="field-slider">
+            <p class="weight-desc" data-i18n="p_water_sub">Tarlanızda kuyu suyu azsa veya mazot masrafını kısmak istiyorsanız seçin.</p>
+            <div class="choice-pills">
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_water_any">Farketmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_water_mid">Az Su Yetsin</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_water_high">Hiç Su İstemesin (Kupkuru)</button>
+            </div>
+            <input type="hidden" id="p_su" value="60">
           </div>
 
-          <div class="weight-row">
+          <div class="weight-row" data-pref="p_toprak">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_soil">Toprağı Dinlendirsin ve Gübrelesin</span>
-              <span class="mono-num" id="val_p_toprak">50</span>
+              <span class="weight-main" data-i18n="p_soil">Toprağın Durumu (Dinlendirme & Gübre)</span>
             </div>
-            <p class="weight-desc" data-i18n="p_soil_sub">Tarlayı yormasın, toprağa güç versin, gübre masrafını azaltsın</p>
-            <input type="range" id="p_toprak" min="0" max="100" value="50" class="field-slider">
+            <p class="weight-desc" data-i18n="p_soil_sub">Tarlayı yormayalım, seneye buğday ekildiğinde gübre tasarrufu sağlasın.</p>
+            <div class="choice-pills">
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_soil_any">Farketmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_soil_mid">Toprağı Dinlendirsin</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_soil_high">Toprağa Doğal Gübre Bıraksın</button>
+            </div>
+            <input type="hidden" id="p_toprak" value="60">
           </div>
 
-          <div class="weight-row">
+          <div class="weight-row" data-pref="p_kara">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_yield">Garanti ve Düzenli Mahsul</span>
-              <span class="mono-num" id="val_p_kara">50</span>
+              <span class="weight-main" data-i18n="p_yield">Mahsul Hedefi</span>
             </div>
-            <p class="weight-desc" data-i18n="p_yield_sub">Maceraya girmeyelim, her sene bilinen düzenli ürünü versin</p>
-            <input type="range" id="p_kara" min="0" max="100" value="50" class="field-slider">
+            <p class="weight-desc" data-i18n="p_yield_sub">Maceraya girmeden her sene bildiğimiz garanti ürünü mü alalım?</p>
+            <div class="choice-pills">
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_yield_any">Farketmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_yield_mid">Alışıldık Garanti Ürün</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_yield_high">En Yüksek Tonaj & Verim</button>
+            </div>
+            <input type="hidden" id="p_kara" value="60">
           </div>
 
-          <div class="weight-row">
+          <div class="weight-row" data-pref="p_guclu">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_resilience">Sıcağa ve Dona Karşı Sağlamlık</span>
-              <span class="mono-num" id="val_p_guclu">50</span>
+              <span class="weight-main" data-i18n="p_resilience">Hava Şartı Güvencesi</span>
             </div>
-            <p class="weight-desc" data-i18n="p_resilience_sub">Ani ayaz, don veya aşırı sıcak vurduğunda yanmasın</p>
-            <input type="range" id="p_guclu" min="0" max="100" value="50" class="field-slider">
+            <p class="weight-desc" data-i18n="p_resilience_sub">Bölgede ani don, ayaz veya aşırı kavurucu sıcak riski ne kadar?</p>
+            <div class="choice-pills">
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_res_normal">Normal Şartlar</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_res_mid">Sıcağa ve Dona Dayanıklı</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_res_high">En Zorlu Havada Bile Yanmasın</button>
+            </div>
+            <input type="hidden" id="p_guclu" value="60">
           </div>
         </div>
 
@@ -229,13 +245,27 @@
         <!-- Primary Recommendation Statement -->
         <article class="decision-sheet" id="featuredCropCard">
           <div class="decision-header">
-            <span class="decision-tag" data-i18n="best_match_badge">Birincil Ekin Tavsiyesi</span>
+            <span class="decision-tag" data-i18n="best_match_badge">Tarlanıza En Uygun 1. Ürün</span>
             <h2 id="bestCropName" class="decision-crop">--</h2>
             <p id="bestCropSub" class="decision-rationale">Arazi iklim koşulları ve toprak hedefleri doğrultusunda en yüksek uyum indeksine sahip çeşit.</p>
           </div>
-          <div class="decision-score-stamp">
-            <div class="stamp-value" id="bestCropScore">--</div>
-            <div class="stamp-label" data-i18n="score_label">Uyum İndeksi (0-100)</div>
+          
+          <div class="decision-right-block">
+            <div class="judgment-badge" id="bestCropJudgment">
+              <span class="judgment-title" id="judgmentTitle">Tam Tarlanın Malı</span>
+              <span class="judgment-sub" id="judgmentSub">Bu iklimde gözün kapalı ekebilirsin</span>
+            </div>
+            
+            <div class="farmer-ledger-mini">
+              <div class="f-ledger-item">
+                <span class="f-ledger-label">Bereket Oranı</span>
+                <span class="f-ledger-val" id="bestYieldRatio">1'e 10 Verir</span>
+              </div>
+              <div class="f-ledger-item">
+                <span class="f-ledger-label">Tahmini Hasat</span>
+                <span class="f-ledger-val" id="bestYieldPerDecare">180 kg / dönüm</span>
+              </div>
+            </div>
           </div>
         </article>
 
