@@ -518,6 +518,7 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, gecmis_bitkiler=No
     ts_bitki = ts_secim[0] if ts_secim else tum_bitkiler[0]
     ts = dict(STRATEJILER["toprak_sagligi"])
     ts["bitki"] = ts_bitki["bitki"]
+    ts["anahtar"] = ts_bitki["anahtar"]
     ts["skor"] = round((ts_bitki["skor"] + 10) / 2, 1)
     ts["bitki_skor"] = ts_bitki["skor"]
     ts["ad"] = L["strategies"]["toprak_sagligi"]
@@ -527,6 +528,7 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, gecmis_bitkiler=No
     su_bitki = su_secim[0] if su_secim else tum_bitkiler[-1]
     su_str = dict(STRATEJILER["su_tasarrufu"])
     su_str["bitki"] = su_bitki["bitki"]
+    su_str["anahtar"] = su_bitki["anahtar"]
     su_str["skor"] = round((su_bitki["skor"] + 10) / 2, 1)
     su_str["bitki_skor"] = su_bitki["skor"]
     su_str["ad"] = L["strategies"]["su_tasarrufu"]
@@ -543,6 +545,7 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, gecmis_bitkiler=No
 
     mk = dict(STRATEJILER["mevcut_koruma"])
     mk["bitki"] = mevcut_ad
+    mk["anahtar"] = mevcut_anahtar
     mk["skor"] = round(mevcut_skor * 0.95, 1)
     mk["bitki_skor"] = mevcut_skor
     mk["mevcut_anahtar"] = mevcut_anahtar

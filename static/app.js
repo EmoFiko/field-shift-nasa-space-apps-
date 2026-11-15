@@ -392,7 +392,7 @@ async function loadCrops() {
     for (const [key, crop] of Object.entries(loadedCropsData)) {
       const opt = document.createElement('option');
       opt.value = key;
-      opt.textContent = crop.ad;
+      opt.textContent = (currentLang === 'en' && crop.ad_en) ? crop.ad_en : crop.ad;
       mevcutCropSelect.appendChild(opt);
     }
   } catch (err) {
@@ -408,7 +408,7 @@ function populateHistorySelects() {
     for (const [key, crop] of Object.entries(loadedCropsData)) {
       const opt = document.createElement('option');
       opt.value = key;
-      opt.textContent = crop.ad;
+      opt.textContent = (currentLang === 'en' && crop.ad_en) ? crop.ad_en : crop.ad;
       sel.appendChild(opt);
     }
     sel.value = currentVal;
@@ -450,7 +450,7 @@ function addHistoryCropRow() {
   for (const [key, crop] of Object.entries(loadedCropsData)) {
     const opt = document.createElement('option');
     opt.value = key;
-    opt.textContent = crop.ad;
+    opt.textContent = (currentLang === 'en' && crop.ad_en) ? crop.ad_en : crop.ad;
     sel.appendChild(opt);
   }
 
@@ -492,7 +492,9 @@ function initPills() {
   });
 
   mevcutCropSelect.addEventListener('change', () => { if (appState.ort) debounceRotation(); });
-  previousCropSelect.addEventListener('change', () => { if (appState.ort) debounceRotation(); });
+  document.querySelectorAll('.previous-crop-select').forEach(sel => {
+    sel.addEventListener('change', () => { if (appState.ort) debounceRotation(); });
+  });
   cIrrigation.addEventListener('change', () => { if (appState.ort) debounceRotation(); });
   cMarket.addEventListener('change', () => { if (appState.ort) debounceRotation(); });
   fieldSizeInput.addEventListener('change', () => { if (appState.rotationResult) updateIncomeCard(appState.rotationResult); });
@@ -519,7 +521,58 @@ function setLanguage(lang) {
     addressInput.placeholder = I18N[lang].ph_address;
   }
 
-  if (appState.ort) runRotationCalculation();
+  // Update crop select option labels for language
+  updateSelectOptionsLanguage(lang);
+
+  // Update history crop labels
+  document.querySelectorAll('.crop-history-row').forEach(row => {
+    const idx = row.getAttribute('data-history-idx');
+    const lbl = row.querySelector('.cell-label');
+    if (lbl) {
+      if (idx === '1') {
+        lbl.textContent = I18N[lang].lbl_prev_crop;
+      } else {
+        lbl.textContent = lang === 'tr' ? `${idx}. ${I18N.tr.lbl_year_prev}` : `${idx} ${I18N.en.lbl_year_prev}`;
+      }
+    }
+  });
+
+  const btnAdd = document.getElementById('btnAddHistoryCrop');
+  if (btnAdd && I18N[lang].btn_add_history) {
+    btnAdd.textContent = I18N[lang].btn_add_history;
+  }
+
+  if (appState.ort) {
+    runRotationCalculation();
+  }
+}
+
+function updateSelectOptionsLanguage(lang) {
+  // Update fallow option in mevcut
+  if (mevcutCropSelect && mevcutCropSelect.options.length > 0) {
+    mevcutCropSelect.options[0].textContent = I18N[lang].opt_empty_crop;
+    for (let i = 1; i < mevcutCropSelect.options.length; i++) {
+      const opt = mevcutCropSelect.options[i];
+      const crop = loadedCropsData[opt.value];
+      if (crop) {
+        opt.textContent = (lang === 'en' && crop.ad_en) ? crop.ad_en : crop.ad;
+      }
+    }
+  }
+
+  // Update history selects
+  document.querySelectorAll('.previous-crop-select').forEach(sel => {
+    if (sel.options.length > 0) {
+      sel.options[0].textContent = I18N[lang].opt_prev_none;
+      for (let i = 1; i < sel.options.length; i++) {
+        const opt = sel.options[i];
+        const crop = loadedCropsData[opt.value];
+        if (crop) {
+          opt.textContent = (lang === 'en' && crop.ad_en) ? crop.ad_en : crop.ad;
+        }
+      }
+    }
+  });
 }
 
 async function runFullAnalysis() {
@@ -675,13 +728,13 @@ function renderResultsUI(data) {
   // Hero Crop Card
   if (data.en_iyi_bitki) {
     const bitkiKey = data.en_iyi_bitki.anahtar || '';
-    bestCropName.textContent = data.en_iyi_bitki.bitki;
+    const cropInfo = loadedCropsData[bitkiKey] || {};
+    bestCropName.textContent = (currentLang === 'en' && cropInfo.ad_en) ? cropInfo.ad_en : data.en_iyi_bitki.bitki;
 
     const judgment = getFarmerJudgment(data.en_iyi_bitki.skor, currentLang);
     judgmentTitle.textContent = judgment.title;
     judgmentSub.textContent = judgment.sub;
 
-    const cropInfo = loadedCropsData[bitkiKey] || {};
     const metrics = CROP_METRICS[bitkiKey] || {
       ratio_en: cropInfo.oran_en || 'Yields 1:8', ratio_tr: cropInfo.oran || "1'e 8 Verir",
       yield_en: `${cropInfo.verim_kg_donum || 300} kg / decare`, yield_tr: `${cropInfo.verim_kg_donum || 300} kg / dönüm`
@@ -710,9 +763,12 @@ function renderResultsUI(data) {
       const descText = currentLang === 'tr' ? item.aciklama : (item.aciklama_en || item.aciklama);
       const yearLabel = currentLang === 'tr' ? `${item.yil}. Yıl` : `Year ${item.yil}`;
 
+      const cropInfo = loadedCropsData[item.anahtar] || {};
+      const cropName = (currentLang === 'en' && cropInfo.ad_en) ? cropInfo.ad_en : item.bitki;
+
       card.innerHTML = `
         <span class="year-pill">${yearLabel}</span>
-        <h4 class="year-crop-name">${item.bitki}</h4>
+        <h4 class="year-crop-name">${cropName}</h4>
         <span class="year-role-tag ${isHealing ? '' : 'neutral'}">${roleText}</span>
         <p class="year-desc">${descText}</p>
         <div class="year-metrics-strip">
@@ -730,11 +786,14 @@ function renderResultsUI(data) {
     data.stratejiler.forEach((strat, idx) => {
       const card = document.createElement('div');
       card.className = 'strategy-column-card';
+      const stratCropInfo = loadedCropsData[strat.anahtar || ''] || {};
+      const stratCropName = (currentLang === 'en' && stratCropInfo.ad_en) ? stratCropInfo.ad_en : strat.bitki;
+
       card.innerHTML = `
-        <span class="strat-card-tag">Route ${idx + 1}</span>
+        <span class="strat-card-tag">${currentLang === 'tr' ? (idx + 1) + '. Yol' : 'Route ' + (idx + 1)}</span>
         <h4 class="strat-card-title">${strat.ad}</h4>
         <div class="strat-crop-row">
-          <span class="strat-crop-name">${strat.bitki}</span>
+          <span class="strat-crop-name">${stratCropName}</span>
           <span class="strat-crop-score">${strat.skor} / 100</span>
         </div>
         <p class="strat-narrative">${strat.neden}</p>
