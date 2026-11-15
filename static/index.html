@@ -124,52 +124,48 @@
         <div class="weights-list">
           <div class="weight-row" data-pref="p_water">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_water">Water Needs (Irrigation)</span>
+              <span class="weight-main" data-i18n="p_water">Su İhtiyacı</span>
             </div>
-            <p class="weight-desc" data-i18n="p_water_sub">Low water saves well-pump fuel and running costs.</p>
             <div class="choice-pills">
-              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_water_any">Doesn't Matter</button>
-              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_water_mid">Low Water</button>
-              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_water_high">Rain Only (Dryland)</button>
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_water_any">Fark Etmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_water_mid">Az Su</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_water_high">Kuru Tarım</button>
             </div>
             <input type="hidden" id="p_su" value="60">
           </div>
 
           <div class="weight-row" data-pref="p_toprak">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_soil">Soil Health</span>
+              <span class="weight-main" data-i18n="p_soil">Toprak Sağlığı</span>
             </div>
-            <p class="weight-desc" data-i18n="p_soil_sub">Rest the land and reduce fertilizer bills next season.</p>
             <div class="choice-pills">
-              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_soil_any">Doesn't Matter</button>
-              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_soil_mid">Rest the Soil</button>
-              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_soil_high">Natural Nitrogen Fix</button>
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_soil_any">Fark Etmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_soil_mid">Toprağı Dinlendir</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_soil_high">Azot Katkısı</button>
             </div>
             <input type="hidden" id="p_toprak" value="60">
           </div>
 
           <div class="weight-row" data-pref="p_kara">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_yield">Harvest Goal</span>
+              <span class="weight-main" data-i18n="p_yield">Verim Hedefi</span>
             </div>
-            <p class="weight-desc" data-i18n="p_yield_sub">Stick to known reliable crops or go for maximum tonnage?</p>
             <div class="choice-pills">
-              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_yield_any">Doesn't Matter</button>
-              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_yield_mid">Reliable Harvest</button>
-              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_yield_high">Maximum Yield</button>
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_yield_any">Fark Etmez</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_yield_mid">Dengeli Verim</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_yield_high">Yüksek Verim</button>
             </div>
             <input type="hidden" id="p_kara" value="60">
           </div>
 
           <div class="weight-row" data-pref="p_guclu">
             <div class="weight-label-row">
-              <span class="weight-main" data-i18n="p_resilience">Weather Resilience</span>
+              <span class="weight-main" data-i18n="p_resilience">Hava Koşullarına Dayanıklılık</span>
             </div>
-            <p class="weight-desc" data-i18n="p_resilience_sub">Protection from frost, drought, or heatwaves.</p>
             <div class="choice-pills">
-              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_res_normal">Normal Conditions</button>
-              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_res_mid">Frost &amp; Heat Resistant</button>
-              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_res_high">Extreme Weather Proof</button>
+              <button type="button" class="choice-pill" data-val="20" data-i18n="opt_res_normal">Normal</button>
+              <button type="button" class="choice-pill active" data-val="60" data-i18n="opt_res_mid">Sıcak &amp; Don Dayanımı</button>
+              <button type="button" class="choice-pill" data-val="100" data-i18n="opt_res_high">Aşırı Hava Koşulları</button>
             </div>
             <input type="hidden" id="p_guclu" value="60">
           </div>
@@ -230,20 +226,20 @@
 
       <!-- Initial State Notice -->
       <div id="welcomePlaceholder" class="initial-brief">
-        <h2 class="brief-headline" data-i18n="welcome_title">Satellite-guided crop selection tailored for your field.</h2>
-        <p class="brief-body" data-i18n="welcome_desc">Select your field on the map and set your season. We correlate NASA temperature, moisture, and sunshine patterns to find crops that yield well without depleting your land.</p>
+        <h2 class="brief-headline" data-i18n="welcome_title">NASA POWER Uydu Verileriyle Ekim Nöbeti Planlayıcı</h2>
+        <p class="brief-body" data-i18n="welcome_desc">Haritadan tarla konumunuzu seçin ve ekim dönemini belirleyin. NASA iklim göstergeleri analiz edilerek toprağı yormayan en uygun rotasyon yolları listelenir.</p>
         <div class="agri-pillars">
           <div class="pillar">
-            <h3 data-i18n="pil_1_title">Natural Soil Feeding</h3>
-            <p data-i18n="pil_1_desc">Rotations with pulses fix nitrogen naturally, saving on fertilizer for subsequent years.</p>
+            <h3 data-i18n="pil_1_title">Toprak Sağlığı</h3>
+            <p data-i18n="pil_1_desc">Ekim nöbetinde baklagiller toprağa doğal azot bağlar.</p>
           </div>
           <div class="pillar">
-            <h3 data-i18n="pil_2_title">Water Protection</h3>
-            <p data-i18n="pil_2_desc">Matches seasonal rainfall so you avoid unnecessary well pumping and electricity costs.</p>
+            <h3 data-i18n="pil_2_title">Su Dengesi</h3>
+            <p data-i18n="pil_2_desc">Bölgesel yağış rejimine uygun tohum seçimiyle sulama maliyetini azaltır.</p>
           </div>
           <div class="pillar">
-            <h3 data-i18n="pil_3_title">Climate Defense</h3>
-            <p data-i18n="pil_3_desc">Identifies frost and heatwave risks during sensitive blooming stages.</p>
+            <h3 data-i18n="pil_3_title">İklim Riski</h3>
+            <p data-i18n="pil_3_desc">Kritik dönemlerde don ve aşırı sıcak risklerini önceden tespit eder.</p>
           </div>
         </div>
       </div>
@@ -308,7 +304,6 @@
               <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
               <span data-i18n="income_title">Tahmini Gelir</span>
             </span>
-            <span class="income-card-hint" data-i18n="income_hint">Ortalama piyasa fiyatı × arazi büyüklüğü × verim baz alınır</span>
           </div>
           <div class="income-figures">
             <div class="income-fig-item">
@@ -348,8 +343,7 @@
 
         <!-- 3 Agronomic Strategies Matrix -->
         <div class="strategy-matrix-head">
-          <h3 data-i18n="strategies_heading">3 Cultivation Approaches</h3>
-          <p data-i18n="strategies_sub">Pick the route that matches your farming priority.</p>
+          <h3 data-i18n="strategies_heading">Ekim Nöbeti Stratejileri</h3>
         </div>
 
         <div class="strategy-columns" id="strategiesContainer">
