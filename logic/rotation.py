@@ -328,7 +328,7 @@ def stres_takvimi(ort, lang="tr"):
     }
 
 
-def rotasyon_oneri(ort, oncelikler, mevcut=None, crops=None, scenario=None, constraints=None, lang="tr"):
+def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, crops=None, scenario=None, constraints=None, lang="tr"):
     """
     3 farklı rotasyon stratejisi + stres takvimi + risk uyarıları + dil desteği.
     """
@@ -357,6 +357,18 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, crops=None, scenario=None, cons
             "not": c["not"],
         })
     tum_bitkiler.sort(key=lambda x: x["skor"], reverse=True)
+
+    # Previous crop rotation bonus:
+    # If farmer planted a depleting or neutral crop last year,
+    # boost soil-improving crops in the ranking.
+    if onceki and onceki in crops:
+        onceki_etki = crops[onceki].get("toprak_etkisi", "nötr")
+        if onceki_etki in ("tüketici", "nötr"):
+            for b in tum_bitkiler:
+                if b["toprak_etkisi"] == "iyileştirici":
+                    b["skor"] = min(100, b["skor"] + 8)
+            # Re-sort after bonus
+            tum_bitkiler.sort(key=lambda x: x["skor"], reverse=True)
 
     # Strateji 1: Toprak Sağlığı
     ts_secim = [b for b in tum_bitkiler if b["toprak_etkisi"] in ("iyileştirici", "nötr")]

@@ -126,10 +126,11 @@ class Handler(BaseHTTPRequestHandler):
                 ort = body["ortalama"]
                 oncelikler = body.get("oncelikler", {})
                 mevcut = body.get("mevcut")
+                onceki = body.get("onceki")
                 scenario = body.get("scenario")
                 constraints = body.get("constraints")
-                lang = body.get("lang", "tr")
-                sonuc = rotasyon_oneri(ort, oncelikler, mevcut, scenario=scenario, constraints=constraints, lang=lang)
+                lang = body.get("lang", "en")
+                sonuc = rotasyon_oneri(ort, oncelikler, mevcut, onceki=onceki, scenario=scenario, constraints=constraints, lang=lang)
                 self._json(sonuc)
             except Exception as ex:
                 self._json({"error": str(ex)}, 500)
