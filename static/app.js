@@ -79,6 +79,10 @@ const I18N = {
     drought_title: 'Drought Risk Assessment',
     drought_level: 'Risk Level',
     drought_desc: 'Recommendation',
+    rotation_plan_title: '3-Year Scientific Crop Rotation Plan',
+    rotation_plan_badge: 'Soil Health & Nitrogen Cycle',
+    btn_add_history: '+ Add Previous Year Crop',
+    lbl_year_prev: 'Years Ago',
   },
   tr: {
     lang_code: 'English',
@@ -156,6 +160,10 @@ const I18N = {
     drought_title: 'Kuraklık Riski Analizi',
     drought_level: 'Risk Düzeyi',
     drought_desc: 'Çiftçi Tavsiyesi',
+    rotation_plan_title: '3 Yıllık Bilimsel Rotasyon Takvimi',
+    rotation_plan_badge: 'Toprak Sağlığı & Azot Döngüsü',
+    btn_add_history: '+ Daha Önceki Yılı Ekle',
+    lbl_year_prev: 'Yıl Önceki Ürün',
   }
 };
 
@@ -368,30 +376,95 @@ async function geocodeAddress() {
   }
 }
 
+let loadedCropsData = {};
+
 async function loadCrops() {
   try {
     const res = await fetch('/api/bitkiler');
     if (!res.ok) throw new Error('Crops could not be loaded');
-    const crops = await res.json();
+    loadedCropsData = await res.json();
 
     const emptyOpt = `<option value="">${I18N[currentLang].opt_empty_crop}</option>`;
     mevcutCropSelect.innerHTML = emptyOpt;
 
-    const prevNoneOpt = `<option value="">${I18N[currentLang].opt_prev_none}</option>`;
-    previousCropSelect.innerHTML = prevNoneOpt;
+    populateHistorySelects();
 
-    for (const [key, crop] of Object.entries(crops)) {
+    for (const [key, crop] of Object.entries(loadedCropsData)) {
       const opt = document.createElement('option');
       opt.value = key;
       opt.textContent = crop.ad;
       mevcutCropSelect.appendChild(opt);
-
-      const opt2 = opt.cloneNode(true);
-      previousCropSelect.appendChild(opt2);
     }
   } catch (err) {
     console.error(err);
   }
+}
+
+function populateHistorySelects() {
+  const selects = document.querySelectorAll('.previous-crop-select');
+  selects.forEach(sel => {
+    const currentVal = sel.value;
+    sel.innerHTML = `<option value="">${I18N[currentLang].opt_prev_none}</option>`;
+    for (const [key, crop] of Object.entries(loadedCropsData)) {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = crop.ad;
+      sel.appendChild(opt);
+    }
+    sel.value = currentVal;
+  });
+}
+
+function getSelectedCropHistory() {
+  const history = [];
+  document.querySelectorAll('.previous-crop-select').forEach(sel => {
+    if (sel.value) history.push(sel.value);
+  });
+  return history;
+}
+
+let historyCount = 1;
+function addHistoryCropRow() {
+  if (historyCount >= 4) return; // En fazla 4 yıl geçmiş
+  historyCount++;
+  const container = document.getElementById('cropHistoryContainer');
+  const row = document.createElement('div');
+  row.className = 'field-select-row crop-history-row';
+  row.setAttribute('data-history-idx', historyCount);
+
+  const labelText = currentLang === 'tr' 
+    ? `${historyCount}. ${I18N.tr.lbl_year_prev}` 
+    : `${historyCount} ${I18N.en.lbl_year_prev}`;
+
+  row.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <label class="cell-label">${labelText}</label>
+      <button type="button" class="subtle-link remove-hist-btn" style="color:var(--c-risk-red); font-size:11px;">✕</button>
+    </div>
+    <select class="field-select previous-crop-select">
+      <option value="">${I18N[currentLang].opt_prev_none}</option>
+    </select>
+  `;
+
+  const sel = row.querySelector('.previous-crop-select');
+  for (const [key, crop] of Object.entries(loadedCropsData)) {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = crop.ad;
+    sel.appendChild(opt);
+  }
+
+  row.querySelector('.remove-hist-btn').addEventListener('click', () => {
+    row.remove();
+    historyCount--;
+    if (appState.ort) debounceRotation();
+  });
+
+  sel.addEventListener('change', () => {
+    if (appState.ort) debounceRotation();
+  });
+
+  container.appendChild(row);
 }
 
 function initPills() {
@@ -481,6 +554,7 @@ async function runFullAnalysis() {
 
     appState.ort = data.ortalama;
     appState.raw = data.raw;
+    appState.aylik = data.aylik || null;
 
     valTemp.textContent = appState.ort.sıcaklık_C;
     valPrecip.textContent = appState.ort.yağış_mm_gun;
@@ -515,22 +589,18 @@ function updateDroughtCard(precipMmDay) {
 function updateIncomeCard(data) {
   if (!data || !data.en_iyi_bitki) return;
   const bitkiKey = data.en_iyi_bitki.anahtar || '';
-  const metrics = CROP_METRICS[bitkiKey];
-  const marketData = CROP_MARKET_PRICES[bitkiKey];
+  const cropInfo = loadedCropsData[bitkiKey] || {};
   const fieldSize = parseFloat(fieldSizeInput.value) || 50;
 
-  if (metrics && marketData) {
-    const totalYield = Math.round(metrics.yield_mid * fieldSize);
-    const price = marketData.price;
-    const gross = Math.round(totalYield * price);
-    incTotalYield.textContent = `${totalYield.toLocaleString()} kg`;
-    incPricePerKg.textContent = `${price} ${marketData.unit}`;
-    incGrossRevenue.textContent = `${gross.toLocaleString()} ₺`;
-  } else {
-    incTotalYield.textContent = '—';
-    incPricePerKg.textContent = '—';
-    incGrossRevenue.textContent = '—';
-  }
+  const verim = cropInfo.verim_kg_donum || 300;
+  const fiyat = cropInfo.fiyat_tl_kg || 15.0;
+
+  const totalYield = Math.round(verim * fieldSize);
+  const gross = Math.round(totalYield * fiyat);
+
+  incTotalYield.textContent = `${totalYield.toLocaleString()} kg`;
+  incPricePerKg.textContent = `${fiyat} ₺/kg`;
+  incGrossRevenue.textContent = `${gross.toLocaleString()} ₺`;
 }
 
 async function runRotationCalculation() {
@@ -553,11 +623,15 @@ async function runRotationCalculation() {
     market_preference: cMarket.value || null
   };
 
+  const historyList = getSelectedCropHistory();
+
   const payload = {
     ortalama: appState.ort,
+    aylik: appState.aylik || null,
     oncelikler,
     mevcut: mevcutCropSelect.value || null,
-    onceki: previousCropSelect.value || null,
+    onceki: historyList.length > 0 ? historyList[0] : null,
+    gecmis_bitkiler: historyList,
     scenario,
     constraints,
     lang: currentLang
@@ -607,9 +681,10 @@ function renderResultsUI(data) {
     judgmentTitle.textContent = judgment.title;
     judgmentSub.textContent = judgment.sub;
 
+    const cropInfo = loadedCropsData[bitkiKey] || {};
     const metrics = CROP_METRICS[bitkiKey] || {
-      ratio_en: 'Yields 1:8-10', ratio_tr: "1'e 8-10 Verir",
-      yield_en: '200 - 300 kg / decare', yield_tr: '200 - 300 kg / dönüm'
+      ratio_en: cropInfo.oran_en || 'Yields 1:8', ratio_tr: cropInfo.oran || "1'e 8 Verir",
+      yield_en: `${cropInfo.verim_kg_donum || 300} kg / decare`, yield_tr: `${cropInfo.verim_kg_donum || 300} kg / dönüm`
     };
     bestYieldRatio.textContent = currentLang === 'tr' ? metrics.ratio_tr : metrics.ratio_en;
     bestYieldPerDecare.textContent = currentLang === 'tr' ? metrics.yield_tr : metrics.yield_en;
@@ -621,6 +696,32 @@ function renderResultsUI(data) {
 
     // Income card
     updateIncomeCard(data);
+  }
+
+  // 3-Year Rotation Plan Roadmap Cards
+  const rotationGrid = document.getElementById('rotationCardsGrid');
+  if (rotationGrid && data.rotasyon_plani) {
+    rotationGrid.innerHTML = '';
+    data.rotasyon_plani.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'roadmap-year-card';
+      const isHealing = item.toprak_etkisi === 'iyileştirici';
+      const roleText = currentLang === 'tr' ? item.rol : (item.rol_en || item.rol);
+      const descText = currentLang === 'tr' ? item.aciklama : (item.aciklama_en || item.aciklama);
+      const yearLabel = currentLang === 'tr' ? `${item.yil}. Yıl` : `Year ${item.yil}`;
+
+      card.innerHTML = `
+        <span class="year-pill">${yearLabel}</span>
+        <h4 class="year-crop-name">${item.bitki}</h4>
+        <span class="year-role-tag ${isHealing ? '' : 'neutral'}">${roleText}</span>
+        <p class="year-desc">${descText}</p>
+        <div class="year-metrics-strip">
+          <span>${currentLang === 'tr' ? 'Tahmini Verim:' : 'Est. Yield:'} <strong>${item.verim_kg} kg/da</strong></span>
+          <span>${currentLang === 'tr' ? 'Piyasa:' : 'Market:'} <strong>${item.fiyat_tl} ₺/kg</strong></span>
+        </div>
+      `;
+      rotationGrid.appendChild(card);
+    });
   }
 
   // 3 Strategy Cards
@@ -832,6 +933,7 @@ function setupUIListeners() {
   document.getElementById('btnDownloadReport')?.addEventListener('click', downloadReport);
   btnAnalyze.addEventListener('click', runFullAnalysis);
   btnLang.addEventListener('click', () => { setLanguage(currentLang === 'en' ? 'tr' : 'en'); });
+  document.getElementById('btnAddHistoryCrop')?.addEventListener('click', addHistoryCropRow);
 
   // Coord inputs sync to map
   [latInput, lonInput].forEach(inp => {

@@ -8,6 +8,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 POWER = "https://power.larc.nasa.gov/api/temporal/daily/point"
+POWER_MONTHLY = "https://power.larc.nasa.gov/api/temporal/monthly/point"
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 STATIC = os.path.join(BASE, "static")
@@ -35,6 +36,25 @@ def power_veri(lat, lon, start, end, params="T2M,PRECTOTCORR,ALLSKY_SFC_SW_DWN,W
             import time
             time.sleep(2 ** attempt)  # 1s, 2s
     return None
+
+
+def power_aylik(lat, lon, year="2023", params="T2M,PRECTOTCORR"):
+    """NASA POWER Monthly point endpoint - 12 aylık gerçek veriyi çeker."""
+    qs = urllib.parse.urlencode({
+        "parameters": params,
+        "community": "AG",
+        "longitude": lon,
+        "latitude": lat,
+        "start": year,
+        "end": year,
+        "format": "JSON",
+    })
+    url = f"{POWER_MONTHLY}?{qs}"
+    try:
+        with urllib.request.urlopen(url, timeout=20) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception:
+        return None
 
 
 def ortalama(veri_dict):
@@ -114,7 +134,10 @@ class Handler(BaseHTTPRequestHandler):
                 lat = body["lat"]; lon = body["lon"]; start = body["start"]; end = body["end"]
                 veri = power_veri(lat, lon, start, end)
                 ort = analiz_et(veri)
-                self._json({"ortalama": ort, "raw": veri})
+                # 12 aylık gerçek NASA verisi al
+                yil = start[:4] if len(str(start)) >= 4 else "2023"
+                aylik = power_aylik(lat, lon, year=yil)
+                self._json({"ortalama": ort, "raw": veri, "aylik": aylik})
             except Exception as ex:
                 self._json({"error": str(ex)}, 500)
 
@@ -127,10 +150,16 @@ class Handler(BaseHTTPRequestHandler):
                 oncelikler = body.get("oncelikler", {})
                 mevcut = body.get("mevcut")
                 onceki = body.get("onceki")
+                gecmis_bitkiler = body.get("gecmis_bitkiler", [])
+                aylik = body.get("aylik")
                 scenario = body.get("scenario")
                 constraints = body.get("constraints")
                 lang = body.get("lang", "en")
-                sonuc = rotasyon_oneri(ort, oncelikler, mevcut, onceki=onceki, scenario=scenario, constraints=constraints, lang=lang)
+                sonuc = rotasyon_oneri(
+                    ort, oncelikler, mevcut, onceki=onceki,
+                    gecmis_bitkiler=gecmis_bitkiler, aylik=aylik,
+                    scenario=scenario, constraints=constraints, lang=lang
+                )
                 self._json(sonuc)
             except Exception as ex:
                 self._json({"error": str(ex)}, 500)

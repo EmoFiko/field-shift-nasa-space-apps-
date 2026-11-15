@@ -114,11 +114,16 @@
         </div>
 
         <!-- Previous year crop (affects rotation algorithm) -->
-        <div class="field-select-row">
-          <label for="previousCrop" class="cell-label" data-i18n="lbl_prev_crop">What did you plant last year?</label>
-          <select id="previousCrop" class="field-select">
-            <option value="" data-i18n="opt_prev_none">Don't remember / First year</option>
-          </select>
+        <div id="cropHistoryContainer">
+          <div class="field-select-row crop-history-row" data-history-idx="1">
+            <label class="cell-label" data-i18n="lbl_prev_crop">Geçen Yıl Ekilen Ürün</label>
+            <select class="field-select previous-crop-select">
+              <option value="" data-i18n="opt_prev_none">Yok / İlk Yıl</option>
+            </select>
+          </div>
+        </div>
+        <div class="history-btn-row">
+          <button type="button" class="subtle-link" id="btnAddHistoryCrop">+ Daha Önceki Yılı Ekle</button>
         </div>
 
         <div class="weights-list">
@@ -340,6 +345,20 @@
             </div>
           </div>
         </div>
+
+        <!-- 3-Year Rotation Plan Roadmap -->
+        <section class="rotation-roadmap-section" id="rotationRoadmapSection">
+          <div class="roadmap-head">
+            <div class="roadmap-title-row">
+              <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <h3 data-i18n="rotation_plan_title">3 Yıllık Bilimsel Rotasyon Takvimi</h3>
+            </div>
+            <span class="roadmap-badge" data-i18n="rotation_plan_badge">Toprak Sağlığı &amp; Azot Döngüsü</span>
+          </div>
+          <div class="roadmap-cards-grid" id="rotationCardsGrid">
+            <!-- Dynamically populated 3-year cards -->
+          </div>
+        </section>
 
         <!-- 3 Agronomic Strategies Matrix -->
         <div class="strategy-matrix-head">

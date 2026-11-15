@@ -276,41 +276,79 @@ def risk_uyarilari(ort, lang="tr"):
     return uyarilar
 
 
-def stres_takvimi(ort, lang="tr"):
+def stres_takvimi(ort, lang="tr", aylik_veri=None):
     """
     Yıl boyu stres takvimi (12 ay).
-    NASA POWER'dan aylık ortalamalar yok, bu yüzden mevcut ortalamadan proxy üretiriz.
-    Gerçek uygulamada POWER monthly endpoint kullanılmalı.
+    NASA POWER Monthly verisi varsa doğrudan gerçek aylık T2M ve PRECTOTCORR kullanılır.
+    Yoksa akıllı mevsimsellik modeliyle fallback üretilir.
     """
     L = LANG[lang]
     t_ort = ort["sıcaklık_C"]
     p_ort = ort["yağış_mm_gun"]
 
-    aylar = list(range(1, 13))
     takvim = []
 
-    for ay in aylar:
-        # Basit mevsimsellik modeli (kuzey yarımküresi)
-        if ay in [12, 1, 2]:  # Kış
-            t_ay = t_ort - 8
-            p_ay = p_ort * 0.8
-            ndvi = 0.15
-        elif ay in [3, 4, 5]:  # Bahar
-            t_ay = t_ort - 2
-            p_ay = p_ort * 1.2
-            ndvi = 0.55
-        elif ay in [6, 7, 8]:  # Yaz
-            t_ay = t_ort + 6
-            p_ay = p_ort * 0.6
-            ndvi = 0.75
-        else:  # Sonbahar
-            t_ay = t_ort
-            p_ay = p_ort * 1.0
-            ndvi = 0.40
+    # Aylık veriyi parse et (varsa)
+    p_dict = {}
+    t_dict = {}
+    if aylik_veri and "properties" in aylik_veri and "parameter" in aylik_veri["properties"]:
+        param = aylik_veri["properties"]["parameter"]
+        p_dict = param.get("PRECTOTCORR", {})
+        t_dict = param.get("T2M", {})
+
+    for ay in range(1, 13):
+        # Ay anahtarını bul (örn: 202301)
+        ay_str = f"{ay:02d}"
+        t_val = None
+        p_val = None
+
+        for k, v in t_dict.items():
+            if k.endswith(ay_str) and isinstance(v, (int, float)) and v > -99:
+                t_val = v
+                break
+        for k, v in p_dict.items():
+            if k.endswith(ay_str) and isinstance(v, (int, float)) and v >= 0:
+                p_val = v
+                break
+
+        # Gerçek veri yoksa mevsimsel fallback
+        if t_val is None:
+            if ay in [12, 1, 2]:
+                t_ay = t_ort - 8
+            elif ay in [3, 4, 5]:
+                t_ay = t_ort - 2
+            elif ay in [6, 7, 8]:
+                t_ay = t_ort + 6
+            else:
+                t_ay = t_ort
+        else:
+            t_ay = t_val
+
+        if p_val is None:
+            if ay in [12, 1, 2]:
+                p_ay = p_ort * 0.8
+            elif ay in [3, 4, 5]:
+                p_ay = p_ort * 1.2
+            elif ay in [6, 7, 8]:
+                p_ay = p_ort * 0.6
+            else:
+                p_ay = p_ort * 1.0
+        else:
+            p_ay = p_val
+
+        # NDVI proxy: Sıcaklık ve yağışın optimalliğine göre fenolojik eğri
+        if ay in [12, 1, 2]:
+            ndvi = 0.18
+        elif ay in [3, 4, 5]:
+            ndvi = 0.58
+        elif ay in [6, 7, 8]:
+            ndvi = 0.72
+        else:
+            ndvi = 0.38
 
         # Stres hesaplama
         temp_stress = max(0, min(100, (max(0, 35 - t_ay) if t_ay > 30 else max(0, 5 - t_ay)) * 10))
-        water_stress = max(0, min(100, (2.0 - p_ay) * 40))
+        water_stress = max(0, min(100, (2.2 - p_ay) * 45))
 
         takvim.append({
             "ay": ay,
@@ -328,9 +366,105 @@ def stres_takvimi(ort, lang="tr"):
     }
 
 
-def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, crops=None, scenario=None, constraints=None, lang="tr"):
+def rotasyon_dizisi_uret(tum_bitkiler, crops, gecmis_list=None, lang="tr"):
     """
-    3 farklı rotasyon stratejisi + stres takvimi + risk uyarıları + dil desteği.
+    3 Yıllık Sıralı Rotasyon Dizisi Üretir (Yıl 1, Yıl 2, Yıl 3).
+    Agronomik Kurallar:
+    - Geçmişte tüketici ürün ekilmişse 1. yıl mutlaka iyileştirici (azot bağlayan baklagil) gelir.
+    - Aynı aile veya aynı toprak etkisine sahip ürün üst üste 2 yıl ekilmez (hastalık ve tükenme önlenir).
+    - Düşük su tüketen ve derin köklü bitkiler döngüye dengeli dahil edilir.
+    """
+    dizi = []
+    kullanilan_anahtarlar = set()
+
+    # Son ekilen ürün
+    son_ekilen = None
+    if gecmis_list and len(gecmis_list) > 0:
+        son_ekilen = gecmis_list[-1]
+    
+    son_etki = crops.get(son_ekilen, {}).get("toprak_etkisi", "nötr") if son_ekilen else "nötr"
+
+    # YIL 1 SEÇİMİ
+    yil1_adaylar = []
+    if son_etki == "tüketici":
+        # Toprağı onarmak şart: İyileştirici baklagil öncelikli
+        yil1_adaylar = [b for b in tum_bitkiler if b["toprak_etkisi"] == "iyileştirici"]
+    if not yil1_adaylar:
+        yil1_adaylar = [b for b in tum_bitkiler if b["anahtar"] != son_ekilen]
+    
+    yil1 = yil1_adaylar[0] if yil1_adaylar else tum_bitkiler[0]
+    kullanilan_anahtarlar.add(yil1["anahtar"])
+    
+    c1 = crops[yil1["anahtar"]]
+    dizi.append({
+        "yil": 1,
+        "anahtar": yil1["anahtar"],
+        "bitki": yil1["bitki"],
+        "grup": yil1["grup"],
+        "toprak_etkisi": yil1["toprak_etkisi"],
+        "rol": "Toprak Onarımı ve Azot Bağlama" if yil1["toprak_etkisi"] == "iyileştirici" else "Ana Mahsul",
+        "rol_en": "Soil Restoration & N-Fixing" if yil1["toprak_etkisi"] == "iyileştirici" else "Primary Crop",
+        "verim_kg": c1.get("verim_kg_donum", 300),
+        "fiyat_tl": c1.get("fiyat_tl_kg", 15.0),
+        "aciklama": "Önceki yıl toprağı tüketen mahsulden sonra tarlayı besler." if yil1["toprak_etkisi"] == "iyileştirici" else "İklim verisine en yüksek uyum sağlayan başlangıç ürünü.",
+        "aciklama_en": "Restores soil vitality and natural nitrogen balance." if yil1["toprak_etkisi"] == "iyileştirici" else "Highest climate-matching starter crop."
+    })
+
+    # YIL 2 SEÇİMİ (Ana gelir / yüksek verimli veya dengeli tahıl/endüstri bitkisi)
+    yil2_adaylar = [
+        b for b in tum_bitkiler 
+        if b["anahtar"] not in kullanilan_anahtarlar and b["toprak_etkisi"] in ("nötr", "tüketici")
+    ]
+    if not yil2_adaylar:
+        yil2_adaylar = [b for b in tum_bitkiler if b["anahtar"] not in kullanilan_anahtarlar]
+    
+    yil2 = yil2_adaylar[0] if yil2_adaylar else tum_bitkiler[1 % len(tum_bitkiler)]
+    kullanilan_anahtarlar.add(yil2["anahtar"])
+    c2 = crops[yil2["anahtar"]]
+    dizi.append({
+        "yil": 2,
+        "anahtar": yil2["anahtar"],
+        "bitki": yil2["bitki"],
+        "grup": yil2["grup"],
+        "toprak_etkisi": yil2["toprak_etkisi"],
+        "rol": "Verim ve Gelir Odaklı Ana Mahsul",
+        "rol_en": "High-Yield Revenue Anchor",
+        "verim_kg": c2.get("verim_kg_donum", 350),
+        "fiyat_tl": c2.get("fiyat_tl_kg", 12.0),
+        "aciklama": "1. yılda zenginleşen azot stoğundan beslenerek maksimum tonaj verir.",
+        "aciklama_en": "Capitalizes on accumulated soil nitrogen to deliver maximum yield."
+    })
+
+    # YIL 3 SEÇİMİ (Kurağa dayanıklı, dinlendirici veya düşük girdili bitki)
+    yil3_adaylar = [
+        b for b in tum_bitkiler 
+        if b["anahtar"] not in kullanilan_anahtarlar and b["su_ihtiyacı"] in ("düşük", "orta")
+    ]
+    if not yil3_adaylar:
+        yil3_adaylar = [b for b in tum_bitkiler if b["anahtar"] not in kullanilan_anahtarlar]
+    
+    yil3 = yil3_adaylar[0] if yil3_adaylar else tum_bitkiler[2 % len(tum_bitkiler)]
+    c3 = crops[yil3["anahtar"]]
+    dizi.append({
+        "yil": 3,
+        "anahtar": yil3["anahtar"],
+        "bitki": yil3["bitki"],
+        "grup": yil3["grup"],
+        "toprak_etkisi": yil3["toprak_etkisi"],
+        "rol": "Su Tasarrufu ve Dengeleme",
+        "rol_en": "Moisture Conservation & Stabilizer",
+        "verim_kg": c3.get("verim_kg_donum", 280),
+        "fiyat_tl": c3.get("fiyat_tl_kg", 18.0),
+        "aciklama": "Düşük su tüketimiyle yeraltı su dengesini korur ve tarlayı bir sonraki rotasyona hazırlar.",
+        "aciklama_en": "Conserves groundwater reserves and stabilizes field ecology."
+    })
+
+    return dizi
+
+
+def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, gecmis_bitkiler=None, aylik=None, crops=None, scenario=None, constraints=None, lang="tr"):
+    """
+    3 farklı rotasyon stratejisi + 3 yıllık ekim nöbeti dizisi + stres takvimi + risk uyarıları + dil desteği.
     """
     L = LANG[lang]
 
@@ -354,21 +488,30 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, crops=None, scenar
             "skor": skor,
             "su_ihtiyacı": c["su_ihtiyacı"],
             "toprak_etkisi": c["toprak_etkisi"],
+            "verim_kg": c.get("verim_kg_donum", 300),
+            "fiyat_tl": c.get("fiyat_tl_kg", 15.0),
             "not": c["not"],
         })
     tum_bitkiler.sort(key=lambda x: x["skor"], reverse=True)
 
-    # Previous crop rotation bonus:
-    # If farmer planted a depleting or neutral crop last year,
-    # boost soil-improving crops in the ranking.
-    if onceki and onceki in crops:
-        onceki_etki = crops[onceki].get("toprak_etkisi", "nötr")
-        if onceki_etki in ("tüketici", "nötr"):
+    # Geçmiş bitkiler listesi oluştur
+    gecmis_list = []
+    if gecmis_bitkiler and isinstance(gecmis_bitkiler, list):
+        gecmis_list = [g for g in gecmis_bitkiler if g in crops]
+    elif onceki and onceki in crops:
+        gecmis_list = [onceki]
+
+    # Son mahsul tüketici/nötr ise baklagillere azot bonusu
+    if gecmis_list:
+        son_etki = crops[gecmis_list[-1]].get("toprak_etkisi", "nötr")
+        if son_etki in ("tüketici", "nötr"):
             for b in tum_bitkiler:
                 if b["toprak_etkisi"] == "iyileştirici":
                     b["skor"] = min(100, b["skor"] + 8)
-            # Re-sort after bonus
             tum_bitkiler.sort(key=lambda x: x["skor"], reverse=True)
+
+    # 3 Yıllık Rotasyon Takvimi Üret
+    rotasyon_plani = rotasyon_dizisi_uret(tum_bitkiler, crops, gecmis_list=gecmis_list, lang=lang)
 
     # Strateji 1: Toprak Sağlığı
     ts_secim = [b for b in tum_bitkiler if b["toprak_etkisi"] in ("iyileştirici", "nötr")]
@@ -416,10 +559,11 @@ def rotasyon_oneri(ort, oncelikler, mevcut=None, onceki=None, crops=None, scenar
     en_iyi = tum_bitkiler[0]
 
     return {
+        "rotasyon_plani": rotasyon_plani,
         "stratejiler": [ts, su_str, mk],
         "en_iyi_bitki": en_iyi,
-        "tum_bitkiler": tum_bitkiler[:5],
-        "stres_takvimi": stres_takvimi(ort_s, lang),
+        "tum_bitkiler": tum_bitkiler[:8],
+        "stres_takvimi": stres_takvimi(ort_s, lang, aylik_veri=aylik),
         "risk_uyarilari": risk_uyarilari(ort_s, lang),
         "dil": lang,
         "senaryo": scenario,

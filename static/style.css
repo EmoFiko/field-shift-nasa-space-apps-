@@ -33,6 +33,14 @@
   --radius-sharp: 3px;
   --radius-field: 6px;
   --radius-card: 10px;
+
+  /* Aliases for custom cards */
+  --border: var(--c-border);
+  --border-strong: var(--c-border-strong);
+  --peat: var(--c-earth-deep);
+  --muted: var(--c-earth-muted);
+  --crop-green: var(--c-crop-green);
+  --canvas: var(--c-surface);
 }
 
 *, *::before, *::after {
@@ -1131,6 +1139,121 @@ body {
 .income-fig-highlight .income-fig-val {
   color: var(--crop-green);
   font-size: 17px;
+}
+
+/* History Button Row */
+.history-btn-row {
+  margin-top: -6px;
+  margin-bottom: 14px;
+}
+.crop-history-row {
+  margin-bottom: 10px;
+}
+
+/* 3-Year Rotation Roadmap Section */
+.rotation-roadmap-section {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-card);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+}
+.roadmap-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.roadmap-title-row {
+  display: flex;
+  align-items: center;
+}
+.roadmap-title-row h3 {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--c-earth-deep);
+}
+.roadmap-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sharp);
+  background: var(--c-crop-green-tint);
+  color: var(--c-crop-green);
+  border: 1px solid rgba(37, 93, 54, 0.2);
+}
+.roadmap-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  position: relative;
+}
+.roadmap-year-card {
+  background: var(--c-field-canvas);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sharp);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.roadmap-year-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--c-crop-green);
+}
+.year-pill {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 2px;
+  background: var(--c-earth-deep);
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.year-crop-name {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--c-earth-deep);
+  margin-bottom: 4px;
+}
+.year-role-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-crop-green);
+  margin-bottom: 8px;
+}
+.year-role-tag.neutral {
+  color: var(--c-amber-grain);
+}
+.year-desc {
+  font-size: 12.5px;
+  color: var(--c-earth-body);
+  line-height: 1.4;
+  margin-bottom: 12px;
+  flex-grow: 1;
+}
+.year-metrics-strip {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--c-border);
+  padding-top: 10px;
+  font-size: 11.5px;
+  color: var(--c-earth-muted);
+}
+.year-metrics-strip strong {
+  color: var(--c-earth-deep);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 860px) {
+  .roadmap-cards-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Icon styling */
