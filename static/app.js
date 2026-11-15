@@ -240,7 +240,7 @@ function getDroughtAssessment(precipMmDay, lang) {
   }
 }
 
-let currentLang = 'en';
+let currentLang = 'tr';
 let appState = {
   ort: null,
   raw: null,
@@ -860,5 +860,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadCrops();
   initPills();
   setupUIListeners();
-  setLanguage('en'); // Default English
+  setLanguage('tr'); // Varsayılan Türkçe
 });
