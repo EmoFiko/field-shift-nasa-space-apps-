@@ -304,20 +304,23 @@
         <!-- Income Estimate Card -->
         <div class="income-estimate-card" id="incomeCard">
           <div class="income-card-head">
-            <span class="income-card-title" data-i18n="income_title">📊 Estimated Income</span>
-            <span class="income-card-hint" data-i18n="income_hint">Based on average market price × field size × yield</span>
+            <span class="income-card-title">
+              <svg class="ui-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span data-i18n="income_title">Tahmini Gelir</span>
+            </span>
+            <span class="income-card-hint" data-i18n="income_hint">Ortalama piyasa fiyatı × arazi büyüklüğü × verim baz alınır</span>
           </div>
           <div class="income-figures">
             <div class="income-fig-item">
-              <span class="income-fig-label" data-i18n="income_total_yield">Total Yield</span>
+              <span class="income-fig-label" data-i18n="income_total_yield">Toplam Mahsul</span>
               <span class="income-fig-val" id="incTotalYield">— kg</span>
             </div>
             <div class="income-fig-item">
-              <span class="income-fig-label" data-i18n="income_price_per_kg">Avg. Market Price</span>
+              <span class="income-fig-label" data-i18n="income_price_per_kg">Ortalama Fiyat</span>
               <span class="income-fig-val" id="incPricePerKg">— ₺/kg</span>
             </div>
             <div class="income-fig-item income-fig-highlight">
-              <span class="income-fig-label" data-i18n="income_gross">Gross Revenue</span>
+              <span class="income-fig-label" data-i18n="income_gross">Tahmini Brüt Gelir</span>
               <span class="income-fig-val" id="incGrossRevenue">— ₺</span>
             </div>
           </div>
@@ -326,15 +329,18 @@
         <!-- Drought Risk Card -->
         <div class="drought-risk-card" id="droughtCard">
           <div class="drought-card-head">
-            <span class="drought-card-title" data-i18n="drought_title">💧 Drought Risk Assessment</span>
+            <span class="drought-card-title">
+              <svg class="ui-icon ui-icon-water" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+              <span data-i18n="drought_title">Kuraklık Riski Analizi</span>
+            </span>
           </div>
           <div class="drought-figures">
             <div class="drought-fig-item">
-              <span class="drought-fig-label" data-i18n="drought_level">Risk Level</span>
+              <span class="drought-fig-label" data-i18n="drought_level">Risk Düzeyi</span>
               <span class="drought-fig-val" id="droughtLevel">—</span>
             </div>
             <div class="drought-fig-item">
-              <span class="drought-fig-label" data-i18n="drought_desc">What This Means</span>
+              <span class="drought-fig-label" data-i18n="drought_desc">Çiftçi Tavsiyesi</span>
               <span class="drought-fig-desc" id="droughtDesc">—</span>
             </div>
           </div>

@@ -1133,7 +1133,43 @@ body {
   font-size: 17px;
 }
 
-/* Drought Risk Card */
+/* Icon styling */
+.ui-icon {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-right: 6px;
+  stroke: currentColor;
+}
+.ui-icon-water {
+  color: #2b7a78;
+}
+
+/* Status Indicators */
+.status-indicator {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.status-indicator.status-low {
+  background-color: #2e7d32;
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+}
+.status-indicator.status-mid {
+  background-color: #e65100;
+  box-shadow: 0 0 0 2px rgba(230, 81, 0, 0.2);
+}
+.status-indicator.status-high {
+  background-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+
+.drought-fig-val {
+  display: flex;
+  align-items: center;
+}
 .drought-risk-card {
   background: #fdf8f0;
   border: 1.5px solid #e0c990;

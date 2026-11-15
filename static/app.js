@@ -77,12 +77,12 @@ const I18N = {
     leg_temp: 'Heat Stress Risk',
     leg_water: 'Moisture Deficit',
     leg_ndvi: 'Crop Greenness Rate',
-    income_title: '📊 Estimated Income',
+    income_title: 'Estimated Income',
     income_hint: 'Based on average market price × field size × yield',
     income_total_yield: 'Total Yield',
     income_price_per_kg: 'Avg. Market Price',
     income_gross: 'Gross Revenue',
-    drought_title: '💧 Drought Risk Assessment',
+    drought_title: 'Drought Risk Assessment',
     drought_level: 'Risk Level',
     drought_desc: 'What This Means',
   },
@@ -160,12 +160,12 @@ const I18N = {
     leg_temp: 'Sıcak Vurgunu Riski',
     leg_water: 'Susuzluk Riski',
     leg_ndvi: 'Ürünün Yeşerme Hızı',
-    income_title: '📊 Tahmini Gelir',
+    income_title: 'Tahmini Gelir',
     income_hint: 'Ortalama piyasa fiyatı × tarla büyüklüğü × verim',
     income_total_yield: 'Toplam Hasat',
     income_price_per_kg: 'Ortalama Piyasa Fiyatı',
     income_gross: 'Brüt Gelir',
-    drought_title: '💧 Kuraklık Riski Analizi',
+    drought_title: 'Kuraklık Riski Analizi',
     drought_level: 'Risk Düzeyi',
     drought_desc: 'Bu Ne Anlama Geliyor',
   }
@@ -218,21 +218,24 @@ function getDroughtAssessment(precipMmDay, lang) {
   // daily average precipitation
   if (precipMmDay >= 2.5) {
     return {
-      level: lang === 'tr' ? '🟢 Düşük' : '🟢 Low',
+      levelClass: 'status-low',
+      level: lang === 'tr' ? 'Düşük' : 'Low',
       desc: lang === 'tr'
         ? 'Yağış yeterli. Kuraklık riski minimal, çoğu ürün güvenli.'
         : 'Rainfall is sufficient. Drought risk is minimal; most crops are safe.'
     };
   } else if (precipMmDay >= 1.2) {
     return {
-      level: lang === 'tr' ? '🟡 Orta' : '🟡 Moderate',
+      levelClass: 'status-mid',
+      level: lang === 'tr' ? 'Orta' : 'Moderate',
       desc: lang === 'tr'
         ? 'Yağış sınırda. Su tasarruflu ürün tercih edin veya sulama planlayın.'
         : 'Rainfall is borderline. Prefer drought-tolerant crops or plan supplemental irrigation.'
     };
   } else {
     return {
-      level: lang === 'tr' ? '🔴 Yüksek' : '🔴 High',
+      levelClass: 'status-high',
+      level: lang === 'tr' ? 'Yüksek' : 'High',
       desc: lang === 'tr'
         ? 'Ciddi kuraklık riski. Yalnızca kurak dayanıklı ürün ekin, sulamayı güvence altına alın.'
         : 'Serious drought risk. Plant only drought-resistant crops and secure irrigation.'
@@ -366,7 +369,7 @@ async function geocodeAddress() {
       const lon = parseFloat(data[0].lon);
       updateCoords(lat, lon);
       if (leafletMap) leafletMap.setView([lat, lon], 11);
-      showBanner(`📍 ${data[0].display_name}`, true);
+      showBanner(data[0].display_name, true);
     } else {
       showBanner(currentLang === 'tr' ? 'Adres bulunamadı.' : 'Address not found.');
     }
@@ -517,7 +520,7 @@ async function runFullAnalysis() {
 
 function updateDroughtCard(precipMmDay) {
   const assessment = getDroughtAssessment(precipMmDay, currentLang);
-  droughtLevel.textContent = assessment.level;
+  droughtLevel.innerHTML = `<span class="status-indicator ${assessment.levelClass}"></span><span>${assessment.level}</span>`;
   droughtDesc.textContent = assessment.desc;
 }
 
