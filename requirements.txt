@@ -1,0 +1,3 @@
+# Standart Python kütüphaneleri (http.server, urllib, json, os, socket) ile çalışmaktadır.
+# Gelecek modüller ve test araçları için:
+requests>=2.31.0
